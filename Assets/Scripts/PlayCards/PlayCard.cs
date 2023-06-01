@@ -27,7 +27,6 @@ public class PlayCard : MonoBehaviour
         if (_PlayedCard != null)
         {
             __Deck = __Player.PlayCard(_PlayedCard, __Deck);
-            if ()
         }
         return __Deck;
     }

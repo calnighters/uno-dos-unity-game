@@ -4419,3 +4419,15 @@ Received Import Request.
   path: Assets/Prefabs/Game Deck.prefab
   artifactKey: Guid(086c4ce06bbf4fd49b4f39e681fa99e0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
 Start importing Assets/Prefabs/Game Deck.prefab using Guid(086c4ce06bbf4fd49b4f39e681fa99e0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6b2f6d064a433874a6d9aabd93c96086') in 0.027378 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 933.375833 seconds.
+  path: Assets/Resources/CardBack.png
+  artifactKey: Guid(058c4788efc844bd098a6c589cee3531) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/CardBack.png using Guid(058c4788efc844bd098a6c589cee3531) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e8d632cf2e8f89488b0c6f69ded9740c') in 0.023790 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 18.546509 seconds.
+  path: Assets/Prefabs/Card.prefab
+  artifactKey: Guid(e8b355f47ba69b141b49ee394f4222cc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/Card.prefab using Guid(e8b355f47ba69b141b49ee394f4222cc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '018fe762a671d4517d29f095f0fba140') in 0.009416 seconds 

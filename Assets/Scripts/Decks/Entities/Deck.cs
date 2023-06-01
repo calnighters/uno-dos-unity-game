@@ -66,6 +66,24 @@ namespace UnoDos.Decks.Entities
             }
         }
 
+        public List<ICard> Deal(int numberOfCards)
+        {
+            if (numberOfCards <= 0)
+            {
+                throw new ArgumentOutOfRangeException("numberOfCards", "Number of cards must be greater than 0. ");
+            }
+
+            if (DeckOfCards.Count < numberOfCards)
+            {
+                throw new InvalidOperationException("Not enough cards in the deck to deal ");
+            }
+
+            List<ICard> dealtCards = DeckOfCards.Take(numberOfCards).ToList();
+            DeckOfCards.RemoveRange(0, numberOfCards);
+
+            return dealtCards;
+        }
+
         // Draw Card Method
         public ICard DrawCard()
         {
