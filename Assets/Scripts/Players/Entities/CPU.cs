@@ -1,3 +1,4 @@
+using Assets.Scripts.Players.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace UnoDos.Players.Entities
                     currentDeck.DeckOfCards.Add(_CardToLose);
                 }
             }
-            IsLoseTwoCardPlayed = false;
+            SpecialCardPlayed = SpecialCardPlayed.None;
             return currentDeck;
         }
 
