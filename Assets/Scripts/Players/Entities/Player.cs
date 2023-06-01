@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts.Players.Enums;
+using System.Collections.Generic;
 using System.Linq;
 using UnoDos.Cards.Entities;
 using UnoDos.Cards.Enums;
@@ -75,7 +76,7 @@ namespace UnoDos.Players.Entities
         {
             Cards.RemoveAll(card => cardsToRemove.Contains(card));
             currentDeck.DeckOfCards.AddRange(cardsToRemove);
-            IsLoseTwoCardPlayed = false;
+            SpecialCardPlayed = SpecialCardPlayed.None;
             return currentDeck;
         }
 
@@ -91,13 +92,13 @@ namespace UnoDos.Players.Entities
                         playedCard.Colour = _ShownCard.Colour;
                         break;
                     case CardType.LoseTwo:
-                        IsLoseTwoCardPlayed = true;
+                        SpecialCardPlayed = SpecialCardPlayed.LoseTwo;
                         break;
                     case CardType.SwapDeck:
-                        IsSwapDeckPlayed = true;
+                        SpecialCardPlayed = SpecialCardPlayed.SwapDeck;
                         break;
                     case CardType.Reset:
-                        IsResetCardPlayed = true;
+                        SpecialCardPlayed = SpecialCardPlayed.Reset;
                         break;
                 }
 
@@ -114,7 +115,7 @@ namespace UnoDos.Players.Entities
         public KeyValuePair<List<ICard>, List<ICard>> SwapCards(KeyValuePair<List<ICard>, List<ICard>> unswappedCards)
         {
             KeyValuePair<List<ICard>, List<ICard>> _SwappedCards = new KeyValuePair<List<ICard>, List<ICard>>(unswappedCards.Value, unswappedCards.Key);
-            IsSwapDeckPlayed = false;
+            SpecialCardPlayed = SpecialCardPlayed.None;
             return _SwappedCards;
         }
 
@@ -127,9 +128,7 @@ namespace UnoDos.Players.Entities
 
         public List<ICard> Cards { get; set; }
         public List<string> Errors => __Errors = __Errors ?? new List<string>();
-        public bool IsLoseTwoCardPlayed { get; protected set; }
-        public bool IsResetCardPlayed { get; set; }
-        public bool IsSwapDeckPlayed { get; set; }
+        public SpecialCardPlayed SpecialCardPlayed { get; set; }
         public string PlayerName { get; set; }
     }
 }

@@ -104,6 +104,7 @@ namespace UnoDos.Decks.Entities
             ICard _DrawnCard = DeckOfCards.Where(card => !Card.SpecialCards.Contains(card.TypeOfCard)).Take(DRAW_FACE_CARD_AMOUNT).SingleOrDefault();
 
             //Remove the drawn cards from the draw pile
+            PlayedCards.Add(_DrawnCard);
             DeckOfCards.Remove(_DrawnCard);
             return _DrawnCard;
         }

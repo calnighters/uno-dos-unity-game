@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts.Players.Enums;
+using System.Collections.Generic;
 using UnoDos.Cards.Interfaces;
 using UnoDos.Decks.Interfaces;
 
@@ -8,9 +9,7 @@ namespace UnoDos.Players.Interfaces
     {
         List<ICard> Cards { get; set; }
         List<string> Errors { get; }
-        bool IsLoseTwoCardPlayed { get; }
-        bool IsResetCardPlayed { get; set; }
-        bool IsSwapDeckPlayed { get; set; }
+        SpecialCardPlayed SpecialCardPlayed { get; set; }
         string PlayerName { get; set; }
 
         bool CanPlayCard(ICard playedCard, ICard shownCard);

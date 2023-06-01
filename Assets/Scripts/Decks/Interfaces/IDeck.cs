@@ -8,8 +8,8 @@ namespace UnoDos.Decks.Interfaces
         List<ICard> DeckOfCards { get; }
         ICard LastCardPlayed { get; }
         List<ICard> PlayedCards { get; }
-
         void CreateDeck();
+        List<ICard> Deal(int numberOfCards);
         ICard DrawCard();
         List<ICard> DrawCards(int count);
         ICard DrawInitialCard();
