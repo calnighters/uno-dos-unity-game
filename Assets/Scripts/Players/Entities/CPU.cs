@@ -35,24 +35,30 @@ namespace UnoDos.Players.Entities
         //Method for CPU to play a card after the list of playable cards has been generated
         public IDeck PlayCardCPU(IDeck currentDeck)
         {
-            PossibleCards(currentDeck.LastCardPlayed);
+            bool HasCPUPlayedCard = false;
 
-            if (PlayableCards.Count > 0)
+            while (!HasCPUPlayedCard)
             {
-                //Select a random playable card
-                Random _Random = new Random();
-                int _Index = _Random.Next(PlayableCards.Count());
-                ICard _PlayedCard = PlayableCards[_Index];
-                HasCPUPlayedCard = true;
-                //Remove card from hand and play it on deck
-                return PlayCard(_PlayedCard, currentDeck);
-            }
-            else
-            {
-                DrawCard(currentDeck);
-                HasCPUPlayedCard = false;
-            }
 
+                PossibleCards(currentDeck.LastCardPlayed);
+
+                if (PlayableCards.Count > 0)
+                {
+                    //Select a random playable card
+                    Random _Random = new Random();
+                    int _Index = _Random.Next(PlayableCards.Count());
+                    ICard _PlayedCard = PlayableCards[_Index];
+                    HasCPUPlayedCard = true;
+                    //Remove card from hand and play it on deck
+                    Cards.Remove(_PlayedCard);
+                    currentDeck.PlayedCards.Add(_PlayedCard);
+                }
+                else
+                {
+                    DrawCard(currentDeck);
+                    HasCPUPlayedCard = false;
+                }
+            }
             return currentDeck;
         }
 
@@ -73,7 +79,7 @@ namespace UnoDos.Players.Entities
             return PlayableCards;
         }
 
-        public bool HasCPUPlayedCard { get; private set; }
+        //public bool HasCPUPlayedCard { get; private set; }
         public List<ICard> PlayableCards { get; private set; }
     }
 }

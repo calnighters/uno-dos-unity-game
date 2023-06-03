@@ -6,7 +6,7 @@ namespace UnoDos.Players.Interfaces
 {
     public interface ICPU : IPlayer
     {
-        bool HasCPUPlayedCard { get; }
+        //bool HasCPUPlayedCard { get; }
         List<ICard> PlayableCards { get; }
 
         IDeck LoseTwoCards(IDeck currentDeck);

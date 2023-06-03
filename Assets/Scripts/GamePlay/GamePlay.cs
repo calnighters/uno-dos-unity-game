@@ -15,6 +15,8 @@ using UnoDos.Players.Entities;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using System;
+using System.Threading;
 
 public class GamePlay : MonoBehaviour
 {
@@ -71,13 +73,7 @@ public class GamePlay : MonoBehaviour
 
         SetPlayerHandCardSprites();
 
-        foreach (ICard card in __CPU.Cards)
-        {
-            GameObject cpuDrawnCard = Instantiate(CardSprite, new Vector3(0, 0, 0), Quaternion.identity);
-            cpuDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = RenderSprites.GetSprite(card);
-            cpuDrawnCard.transform.SetParent(OpponentArea.transform, false);
-            cpuDrawnCard.name = card.ToString();
-        }
+        SetCPUHandCardSprites();
 
         ICard _StartingCard = deck.DrawInitialCard();
 
@@ -94,10 +90,25 @@ public class GamePlay : MonoBehaviour
         {
             GameObject playerDrawnCard = Instantiate(CardSprite, new Vector3(0, 0, 0), Quaternion.identity);
             playerDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = RenderSprites.GetSprite(card);
-            playerDrawnCard.GetComponent<Button>().onClick.AddListener(() => UserPlaysCard(playerDrawnCard));
+            //Instead of calling the method directly use a co-routine otherwise the canvas only gets updated after the method is finished
+            //playerDrawnCard.GetComponent<Button>().onClick.AddListener(() => UserPlaysCard(playerDrawnCard));
+            playerDrawnCard.GetComponent<Button>().onClick.AddListener(() => CardClicked(playerDrawnCard));
             playerDrawnCard.transform.SetParent(PlayerArea.transform, false);
             playerDrawnCard.name = card.ToString();
 
+        }
+    }
+
+    private void SetCPUHandCardSprites()
+    {
+        OpponentArea.transform.DetachChildren();
+
+        foreach (ICard card in __CPU.Cards)
+        {
+            GameObject cpuDrawnCard = Instantiate(CardSprite, new Vector3(0, 0, 0), Quaternion.identity);
+            cpuDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = RenderSprites.GetSprite(card);
+            cpuDrawnCard.transform.SetParent(OpponentArea.transform, false);
+            cpuDrawnCard.name = card.ToString();
         }
     }
 
@@ -125,15 +136,31 @@ public class GamePlay : MonoBehaviour
 
     }
 
-    public void UserPlaysCard(GameObject currentCardClicked)
+    //Co-routine is used to update canvas mid method rather than waiting until end
+    public void CardClicked(GameObject currentCardClicked)
+    {
+        StartCoroutine(UserPlaysCard(currentCardClicked));
+    }
+
+    public IEnumerator UserPlaysCard(GameObject currentCardClicked)
     {
         ICard _PreviousLastPlayedCard = deck.LastCardPlayed;
         PlayCard _PlayCard = new PlayCard(deck, currentCardClicked.name, __Player);
         deck = _PlayCard.PlayerPlaysCard();
         if (_PreviousLastPlayedCard != deck.LastCardPlayed)
         {
-            SetLastPlayedCardSprite(deck.LastCardPlayed);
             SetPlayerHandCardSprites();
+            SetLastPlayedCardSprite(deck.LastCardPlayed);
+            yield return new WaitForSeconds(2f);
+            CPUPlaysCard();
         }
+    }
+
+    private void CPUPlaysCard()
+    {
+        __CPU.PlayCardCPU(deck);
+        ICard _PreviousLastPlayedCard = deck.LastCardPlayed;
+        SetLastPlayedCardSprite(deck.LastCardPlayed);
+        SetCPUHandCardSprites();
     }
 }
