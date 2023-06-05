@@ -35,30 +35,23 @@ namespace UnoDos.Players.Entities
         //Method for CPU to play a card after the list of playable cards has been generated
         public IDeck PlayCardCPU(IDeck currentDeck)
         {
-            bool HasCPUPlayedCard = false;
+            PossibleCards(currentDeck.LastCardPlayed);
 
-            while (!HasCPUPlayedCard)
+            if (PlayableCards.Count > 0)
             {
-
-                PossibleCards(currentDeck.LastCardPlayed);
-
-                if (PlayableCards.Count > 0)
-                {
-                    //Select a random playable card
-                    Random _Random = new Random();
-                    int _Index = _Random.Next(PlayableCards.Count());
-                    ICard _PlayedCard = PlayableCards[_Index];
-                    HasCPUPlayedCard = true;
-                    //Remove card from hand and play it on deck
-                    Cards.Remove(_PlayedCard);
-                    currentDeck.PlayedCards.Add(_PlayedCard);
-                }
-                else
-                {
-                    DrawCard(currentDeck);
-                    HasCPUPlayedCard = false;
-                }
+                //Select a random playable card
+                Random _Random = new Random();
+                int _Index = _Random.Next(PlayableCards.Count());
+                ICard _PlayedCard = PlayableCards[_Index];
+                //Remove card from hand and play it on deck
+                Cards.Remove(_PlayedCard);
+                currentDeck.PlayedCards.Add(_PlayedCard);
             }
+            else
+            {
+                DrawCard(currentDeck);
+            }
+            
             return currentDeck;
         }
 

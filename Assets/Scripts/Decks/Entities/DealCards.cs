@@ -18,7 +18,7 @@ public class DealCards : MonoBehaviour
     public void OnClick()
     {
         PlayedCard.SetActive(true);
-        gamePlay.DealCards();
+        gamePlay.DeckClicked();
 
     }
 }

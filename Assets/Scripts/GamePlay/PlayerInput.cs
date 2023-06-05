@@ -55,7 +55,7 @@ public class PlayerInput : MonoBehaviour
     void Deck()
     {
         print("Clicked on the Deck");
-        gamePlay.DealCards();
+        gamePlay.DeckClicked();
 
     }
 

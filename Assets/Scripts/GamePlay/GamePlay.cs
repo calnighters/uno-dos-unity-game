@@ -38,6 +38,7 @@ public class GamePlay : MonoBehaviour
     public Sprite[] PinkCardSprites;
     public Sprite[] PurpleCardSprites;
     public Sprite[] SpecialCardSprites;
+    public Sprite BackCardSprite;
 
     public RenderSprites RenderSprites;
 
@@ -91,7 +92,6 @@ public class GamePlay : MonoBehaviour
             GameObject playerDrawnCard = Instantiate(CardSprite, new Vector3(0, 0, 0), Quaternion.identity);
             playerDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = RenderSprites.GetSprite(card);
             //Instead of calling the method directly use a co-routine otherwise the canvas only gets updated after the method is finished
-            //playerDrawnCard.GetComponent<Button>().onClick.AddListener(() => UserPlaysCard(playerDrawnCard));
             playerDrawnCard.GetComponent<Button>().onClick.AddListener(() => CardClicked(playerDrawnCard));
             playerDrawnCard.transform.SetParent(PlayerArea.transform, false);
             playerDrawnCard.name = card.ToString();
@@ -106,7 +106,7 @@ public class GamePlay : MonoBehaviour
         foreach (ICard card in __CPU.Cards)
         {
             GameObject cpuDrawnCard = Instantiate(CardSprite, new Vector3(0, 0, 0), Quaternion.identity);
-            cpuDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = RenderSprites.GetSprite(card);
+            cpuDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = BackCardSprite;
             cpuDrawnCard.transform.SetParent(OpponentArea.transform, false);
             cpuDrawnCard.name = card.ToString();
         }
@@ -117,10 +117,17 @@ public class GamePlay : MonoBehaviour
         LastPlayedCard.GetComponent<NsUnityEngineUI.Image>().sprite = RenderSprites.GetSprite(card);
     }
 
-    public void DealCards()
+    //Co-routine is used to update canvas mid method rather than waiting until end
+    public void DeckClicked()
+    {
+        StartCoroutine(DealCards());
+    }
+
+    public IEnumerator DealCards()
     {
         if (__Player.Cards == null || __CPU.Cards == null)
         {
+            yield return new WaitForSeconds(.01f);
             DealCardsOnGameStart();
         }
 
@@ -132,6 +139,10 @@ public class GamePlay : MonoBehaviour
             playerDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = RenderSprites.GetSprite(_DrawnCard);
             playerDrawnCard.transform.SetParent(PlayerArea.transform, false);
             playerDrawnCard.name = _DrawnCard.ToString();
+
+            //User has selected to pick up a card - CPU's turn
+            yield return new WaitForSeconds(2f);
+            CPUPlaysCard();
         }
 
     }
@@ -144,6 +155,7 @@ public class GamePlay : MonoBehaviour
 
     public IEnumerator UserPlaysCard(GameObject currentCardClicked)
     {
+        yield return new WaitForSeconds(.01f);
         ICard _PreviousLastPlayedCard = deck.LastCardPlayed;
         PlayCard _PlayCard = new PlayCard(deck, currentCardClicked.name, __Player);
         deck = _PlayCard.PlayerPlaysCard();
@@ -151,9 +163,11 @@ public class GamePlay : MonoBehaviour
         {
             SetPlayerHandCardSprites();
             SetLastPlayedCardSprite(deck.LastCardPlayed);
+            //User has selected a valid card - CPU's turn
             yield return new WaitForSeconds(2f);
             CPUPlaysCard();
         }
+        //User has selected an invalid card - User's turn
     }
 
     private void CPUPlaysCard()

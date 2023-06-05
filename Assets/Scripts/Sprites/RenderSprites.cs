@@ -17,6 +17,7 @@ namespace Assets.Scripts.Sprites
         public Sprite[] PinkCardSprites;
         public Sprite[] PurpleCardSprites;
         public Sprite[] SpecialCardSprites;
+        //public Sprite[] BackCardSprites;
 
         public RenderSprites(Sprite[] greenCardSprites, Sprite[] orangeCardSprites, Sprite[] pinkCardSprites, Sprite[] purpleCardSprites, Sprite[] specialCardSprites)
         {
@@ -25,6 +26,7 @@ namespace Assets.Scripts.Sprites
             PinkCardSprites = pinkCardSprites;
             PurpleCardSprites = purpleCardSprites;
             SpecialCardSprites = specialCardSprites;
+            //BackCardSprites = backCardSprites;
         }
 
         public Sprite GetSprite(ICard cardDrawn)
