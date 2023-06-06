@@ -5,7 +5,6 @@ using UnoDos.Decks.Entities;
 using UnoDos.Cards.Entities;
 using UnoDos.Cards.Interfaces;
 using UnoDos.Cards.Enums;
-using Microsoft.Unity.VisualStudio.Editor;
 using NsUnityEngineUI = UnityEngine.UI;
 using Assets.Scripts.Sprites;
 using System.Linq;
