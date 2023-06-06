@@ -7,31 +7,18 @@ jobs:
   build:
     runs-on: windows-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
-
     steps:
     - name: Checkout project
       uses: actions/checkout@v2
 
-    - name: Setup Unity
-      uses: kuler90/setup-unity@v1
-      # with:
-      #   unity-modules: android
-
-    - name: Activate Unity
-      uses: kuler90/activate-unity@v1
+    - uses: game-ci/unity-builder@v2
+      env:
+        UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+        UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
       with:
-        unity-username: ${{ secrets.UNITY_USERNAME }}
-        unity-password: ${{ secrets.UNITY_PASSWORD }}
-        unity-authenticator-key: ${{ secrets.UNITY_AUTHENTICATOR_KEY }}
-
-    - name: Build Unity
-      uses: kuler90/build-unity@v1
-      with:
-        build-target: StandaloneWindows
-        build-path: ./unodos.exe
+        targetPlatform: StandaloneWindows
+        buildsPath: unodos.exe
     
     - name: Expose exe file
       uses: actions/upload-artifact@v3
