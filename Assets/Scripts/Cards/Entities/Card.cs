@@ -27,7 +27,7 @@ namespace UnoDos.Cards.Entities
         public CardType TypeOfCard { get; set; }
 
         // add an override toString method
-        public string ToString()
+        public override string ToString()
         {
             return Colour.GetDescriptionFromEnum() + " " + TypeOfCard.GetDescriptionFromEnum();
         }

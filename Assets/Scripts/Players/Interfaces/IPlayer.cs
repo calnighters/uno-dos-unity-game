@@ -14,7 +14,7 @@ namespace UnoDos.Players.Interfaces
 
         bool CanPlayCard(ICard playedCard, ICard shownCard);
         IDeck DrawCard(IDeck currentDeck);
-        IDeck LoseTwoCards(List<ICard> cardsToRemove, IDeck currentDeck);
+        IDeck LoseTwoCards(IDeck currentDeck);
         IDeck PlayCard(ICard playedCard, IDeck currentDeck);
         KeyValuePair<List<ICard>, List<ICard>> SwapCards(KeyValuePair<List<ICard>, List<ICard>> unswappedCards);
         List<string> ViewCards();

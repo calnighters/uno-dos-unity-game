@@ -156,8 +156,10 @@ public class GamePlay : MonoBehaviour
     {
         yield return new WaitForSeconds(.01f);
         ICard _PreviousLastPlayedCard = deck.LastCardPlayed;
-        PlayCard _PlayCard = new PlayCard(deck, currentCardClicked.name, __Player);
+        PlayCard _PlayCard = new PlayCard(deck, currentCardClicked.name, __Player, __CPU);
         deck = _PlayCard.PlayerPlaysCard();
+        __Player = _PlayCard.getPlayer();
+        __CPU = _PlayCard.getCPU();
         if (_PreviousLastPlayedCard != deck.LastCardPlayed)
         {
             SetPlayerHandCardSprites();
@@ -171,8 +173,13 @@ public class GamePlay : MonoBehaviour
 
     private void CPUPlaysCard()
     {
-        __CPU.PlayCardCPU(deck);
+        //__CPU.PlayCardCPU(deck);
         ICard _PreviousLastPlayedCard = deck.LastCardPlayed;
+        PlayCard _PlayCard = new PlayCard(deck, __CPU, __Player);
+        deck = _PlayCard.CPUPlaysCard();
+        __Player = _PlayCard.getPlayer();
+        __CPU = _PlayCard.getCPU();
+
         SetLastPlayedCardSprite(deck.LastCardPlayed);
         SetCPUHandCardSprites();
     }

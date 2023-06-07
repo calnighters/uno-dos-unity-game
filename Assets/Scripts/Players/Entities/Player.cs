@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Players.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnoDos.Cards.Entities;
@@ -21,7 +22,8 @@ namespace UnoDos.Players.Entities
         {
             bool _IsShownCardSpecial = Card.SpecialCards.Any(specialCard => specialCard == shownCard.TypeOfCard);
             bool _IsColourValid = playedCard.Colour == shownCard.Colour;
-
+            
+            //If see through
             if (playedCard.Colour == CardColour.SeeThrough)
             {
                 return true;
@@ -39,11 +41,18 @@ namespace UnoDos.Players.Entities
                 case CardType.Seven:
                 case CardType.Eight:
                 case CardType.Nine:
+                    //If previous wrong colour special
                     if (!_IsColourValid && _IsShownCardSpecial)
                     {
                         Errors.Add(string.Format(INVALID_COLOUR_ERROR, playedCard.Colour.ToString(), shownCard.Colour.ToString()));
                         return false;
                     }
+                    //If previous right colour reset
+                    if (_IsColourValid && shownCard.TypeOfCard == CardType.Reset)
+                    {
+                        return true;
+                    }
+                    //If previous number card not 1 above or below
                     if (playedCard.CardScore - shownCard.CardScore != -1
                         && playedCard.CardScore - shownCard.CardScore != 1
                         && !_IsShownCardSpecial)
@@ -51,10 +60,12 @@ namespace UnoDos.Players.Entities
                         Errors.Add(string.Format(INVALID_NUMBER_ERROR, playedCard.CardScore.ToString(), shownCard.CardScore.ToString()));
                         return false;
                     }
+                    //Otherwise ok
                     return true;
                 case CardType.LoseTwo:
                 case CardType.SwapDeck:
                 case CardType.Reset:
+                    //If previous wrong colour and different type of card
                     if (!_IsColourValid && playedCard.TypeOfCard != shownCard.TypeOfCard)
                     {
                         Errors.Add(string.Format(INVALID_COLOUR_ERROR, playedCard.Colour.ToString(), shownCard.Colour.ToString()));
@@ -72,10 +83,24 @@ namespace UnoDos.Players.Entities
             return currentDeck;
         }
 
-        public IDeck LoseTwoCards(List<ICard> cardsToRemove, IDeck currentDeck)
+        public IDeck LoseTwoCards(IDeck currentDeck)
         {
-            Cards.RemoveAll(card => cardsToRemove.Contains(card));
-            currentDeck.DeckOfCards.AddRange(cardsToRemove);
+            if (Cards.Count < 2)
+            {
+                currentDeck.DeckOfCards.Add(Cards[0]);
+                Cards = new List<ICard>();
+            }
+            else
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    Random _Random = new Random();
+                    int _Index = _Random.Next(Cards.Count());
+                    ICard _CardToLose = Cards[_Index];
+                    Cards.Remove(_CardToLose);
+                    currentDeck.DeckOfCards.Add(_CardToLose);
+                }
+            }
             SpecialCardPlayed = SpecialCardPlayed.None;
             return currentDeck;
         }
@@ -86,6 +111,11 @@ namespace UnoDos.Players.Entities
 
             if (CanPlayCard(playedCard, _ShownCard))
             {
+                //Remove card from hand
+                Cards.Remove(playedCard);
+                //Add card to played
+                currentDeck.PlayedCards.Add(playedCard);
+                //Action of played card
                 switch (playedCard.TypeOfCard)
                 {
                     case CardType.SeeThrough:
@@ -93,21 +123,19 @@ namespace UnoDos.Players.Entities
                         break;
                     case CardType.LoseTwo:
                         SpecialCardPlayed = SpecialCardPlayed.LoseTwo;
+                        //remove 2 random cards from players hand - not the played card!!!
+                        currentDeck = LoseTwoCards(currentDeck);
                         break;
                     case CardType.SwapDeck:
                         SpecialCardPlayed = SpecialCardPlayed.SwapDeck;
+                        //swap player and cpu cards - done in PlayCard class
                         break;
                     case CardType.Reset:
                         SpecialCardPlayed = SpecialCardPlayed.Reset;
+                        //next card can be any card - no action - check made on next played card
                         break;
                 }
-
-                if (playedCard.TypeOfCard == CardType.SeeThrough)
-                {
-                    playedCard.Colour = _ShownCard.Colour;
-                }
-                Cards.Remove(playedCard);
-                currentDeck.PlayedCards.Add(playedCard);
+                
             }
             return currentDeck;
         }

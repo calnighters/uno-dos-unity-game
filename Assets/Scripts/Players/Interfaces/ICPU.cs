@@ -9,7 +9,8 @@ namespace UnoDos.Players.Interfaces
         //bool HasCPUPlayedCard { get; }
         List<ICard> PlayableCards { get; }
 
-        IDeck LoseTwoCards(IDeck currentDeck);
         IDeck PlayCardCPU(IDeck currentDeck);
+
+        List<ICard> PossibleCards(ICard shownCard);
     }
 }
