@@ -35,7 +35,7 @@ public class PlayCard : MonoBehaviour
 
     public IDeck PlayerPlaysCard()
     {
-        ICard _PlayedCard = __Player.Cards.SingleOrDefault(card => card.ToString() == __PlayedCardString);
+        ICard _PlayedCard = __Player.Cards.FirstOrDefault(card => card.ToString() == __PlayedCardString);
         ICard _ShownCard = __Deck.LastCardPlayed;
         if (_PlayedCard != null)
         {   
