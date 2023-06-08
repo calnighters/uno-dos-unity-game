@@ -76,7 +76,7 @@ public class GamePlay : MonoBehaviour
         SetCPUHandCardSprites();
 
         ICard _StartingCard = deck.DrawInitialCard();
-
+        print("Starting card is" + _StartingCard);
         LastPlayedCard.SetActive(true);
         SetLastPlayedCardSprite(_StartingCard);
 
@@ -138,7 +138,7 @@ public class GamePlay : MonoBehaviour
             playerDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = RenderSprites.GetSprite(_DrawnCard);
             playerDrawnCard.transform.SetParent(PlayerArea.transform, false);
             playerDrawnCard.name = _DrawnCard.ToString();
-
+            print("Player picked up");
             //User has selected to pick up a card - CPU's turn
             yield return new WaitForSeconds(2f);
             CPUPlaysCard();

@@ -48,12 +48,18 @@ public class PlayCard : MonoBehaviour
                 {
                     swapDecks();
                 }
+                print("Player played " + _PlayedCard.ToString());
             }
             //Player can't play
             else
             {
                 __Deck = __Player.PlayCard(_PlayedCard, __Deck);
+                print("Player unable to play " + _PlayedCard.ToString());
             }
+        }
+        else
+        {
+            //print("Player picked up");
         }
         return __Deck;
     }
@@ -72,12 +78,14 @@ public class PlayCard : MonoBehaviour
             {
                 swapDecks();
             }
+            print("CPU played " + __Deck.LastCardPlayed.ToString());
         }
         //CPU can't play
         else
         {
             //Draw card
             __Deck = __CPU.PlayCardCPU(__Deck);
+            print("CPU picked up");
         }
         return __Deck;
     }

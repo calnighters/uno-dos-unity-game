@@ -35,7 +35,7 @@ namespace Assets.Scripts.Sprites
             Sprite[] _SpriteSetToUse = SpecialCardSprites;
 
 
-            if (cardDrawn.CardScore < 9)
+            if (cardDrawn.CardScore <= 9)
             {
                 CardColour _CardColour = cardDrawn.Colour;
                 switch (_CardColour)
