@@ -108,6 +108,15 @@ namespace UnoDos.Players.Entities
         public IDeck PlayCard(ICard playedCard, IDeck currentDeck)
         {
             ICard _ShownCard = currentDeck.LastCardPlayed;
+            //When comparing compare to most recent non see through  card. If none before - play any
+            //Set shown card to last non-see through card. Otherwise keep as last played see through (i.e. only see through have been played)
+            foreach (ICard card in currentDeck.PlayedCards)
+            {
+                if (card.TypeOfCard != CardType.SeeThrough)
+                {
+                    _ShownCard = card;
+                }
+            }
 
             if (CanPlayCard(playedCard, _ShownCard))
             {
@@ -120,6 +129,7 @@ namespace UnoDos.Players.Entities
                 {
                     case CardType.SeeThrough:
                         playedCard.Colour = _ShownCard.Colour;
+                        //Instead just play see through card. When comparing compare to most recent non see through  card. If none before - play any
                         break;
                     case CardType.LoseTwo:
                         SpecialCardPlayed = SpecialCardPlayed.LoseTwo;

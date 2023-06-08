@@ -37,12 +37,13 @@ public class PlayCard : MonoBehaviour
     {
         ICard _PlayedCard = __Player.Cards.FirstOrDefault(card => card.ToString() == __PlayedCardString);
         ICard _ShownCard = __Deck.LastCardPlayed;
+
+        __Deck = __Player.PlayCard(_PlayedCard, __Deck);
         if (_PlayedCard != null)
         {   
             //Don't swap if Player can't play
-            if (__Player.CanPlayCard(_PlayedCard, _ShownCard))
+            if (_PlayedCard == __Deck.LastCardPlayed)
             {
-                __Deck = __Player.PlayCard(_PlayedCard, __Deck);
                 //Functionality for swapping decks between player and CPU. Easier in this class than player / CPU classes
                 if (_PlayedCard.TypeOfCard == CardType.SwapDeck)
                 {
@@ -53,13 +54,12 @@ public class PlayCard : MonoBehaviour
             //Player can't play
             else
             {
-                __Deck = __Player.PlayCard(_PlayedCard, __Deck);
                 print("Player unable to play " + _PlayedCard.ToString());
             }
         }
         else
         {
-            //print("Player picked up");
+            print("Player card null");
         }
         return __Deck;
     }
@@ -68,14 +68,15 @@ public class PlayCard : MonoBehaviour
     {
         //ICard _PlayedCard = __Player.Cards.SingleOrDefault(card => card.ToString() == __PlayedCardString);
         ICard _ShownCard = __Deck.LastCardPlayed;
-        
+        __Deck = __CPU.PlayCardCPU(__Deck);
+
         //If CPU can play
-        if (__CPU.PossibleCards(_ShownCard).Count > 0)
+        if (__Deck.LastCardPlayed != _ShownCard)
         {
-            __Deck = __CPU.PlayCardCPU(__Deck);
             //Functionality for swapping decks between player and CPU. Easier in this class than player / CPU classes
             if (__Deck.LastCardPlayed.TypeOfCard == CardType.SwapDeck)
             {
+                //Are player cards not updated??
                 swapDecks();
             }
             print("CPU played " + __Deck.LastCardPlayed.ToString());
@@ -84,7 +85,6 @@ public class PlayCard : MonoBehaviour
         else
         {
             //Draw card
-            __Deck = __CPU.PlayCardCPU(__Deck);
             print("CPU picked up");
         }
         return __Deck;
