@@ -52,9 +52,23 @@ namespace UnoDos.Players.Entities
                     {
                         return true;
                     }
+
+                    //Wrap around 0-9 (10-9)
+                    int cardMinusOne = playedCard.CardScore - 1;
+                    if (cardMinusOne == -1)
+                    {
+                        cardMinusOne = 9;
+                    }
+                    //Wrap around 9-0 (10-1)
+                    int cardPlusOne = playedCard.CardScore + 1;
+                    if (cardPlusOne == 10)
+                    {
+                        cardPlusOne = 0;
+                    }
+
                     //If previous number card not 1 above or below
-                    if (playedCard.CardScore - shownCard.CardScore != -1
-                        && playedCard.CardScore - shownCard.CardScore != 1
+                    if (shownCard.CardScore != cardMinusOne
+                        && shownCard.CardScore != cardPlusOne
                         && !_IsShownCardSpecial)
                     {
                         Errors.Add(string.Format(INVALID_NUMBER_ERROR, playedCard.CardScore.ToString(), shownCard.CardScore.ToString()));
@@ -128,7 +142,7 @@ namespace UnoDos.Players.Entities
                 switch (playedCard.TypeOfCard)
                 {
                     case CardType.SeeThrough:
-                        playedCard.Colour = _ShownCard.Colour;
+                        //playedCard.Colour = _ShownCard.Colour;
                         //Instead just play see through card. When comparing compare to most recent non see through  card. If none before - play any
                         break;
                     case CardType.LoseTwo:

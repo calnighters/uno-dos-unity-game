@@ -51,9 +51,9 @@ namespace UnoDos.Decks.Entities
                     case CardColour.Pink:
                     case CardColour.Green:
                     case CardColour.Purple:
+                        //DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, _Colour, CardType.Zero, Convert.ToInt32(CardType.Zero)));
                         DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, _Colour, CardType.Zero, Convert.ToInt32(CardType.Zero)));
-                        DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, _Colour, CardType.Zero, Convert.ToInt32(CardType.Zero)));
-                        AddColourCards(_Colour);
+                        //AddColourCards(_Colour);
                         AddColourCards(_Colour);
                         break;
                     case CardColour.SeeThrough:

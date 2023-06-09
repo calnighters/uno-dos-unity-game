@@ -17,8 +17,18 @@ namespace UnoDos.Players.Entities
         public IDeck PlayCardCPU(IDeck currentDeck)
         {
             ICard _ShownCard = currentDeck.LastCardPlayed;
+            //When comparing compare to most recent non see through  card. If none before - play any
+            //Set shown card to last non-see through card. Otherwise keep as last played see through (i.e. only see through have been played)
+            foreach (ICard card in currentDeck.PlayedCards)
+            {
+                if (card.TypeOfCard != CardType.SeeThrough)
+                {
+                    _ShownCard = card;
+                }
+            }
+
             //List of possible CPU cards
-            PlayableCards = PossibleCards(currentDeck.LastCardPlayed);
+            PlayableCards = PossibleCards(_ShownCard);
             //If can play
             if (PlayableCards.Count > 0)
             {
@@ -35,7 +45,7 @@ namespace UnoDos.Players.Entities
                 {
                     case CardType.SeeThrough:
                         //Set see through 
-                        _PlayedCard.Colour = _ShownCard.Colour;
+                        //_PlayedCard.Colour = _ShownCard.Colour;
                         break;
                     case CardType.LoseTwo:
                         SpecialCardPlayed = SpecialCardPlayed.LoseTwo;

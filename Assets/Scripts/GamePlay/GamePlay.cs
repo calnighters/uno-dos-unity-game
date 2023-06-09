@@ -76,7 +76,7 @@ public class GamePlay : MonoBehaviour
         SetCPUHandCardSprites();
 
         ICard _StartingCard = deck.DrawInitialCard();
-        print("Starting card is" + _StartingCard);
+        print("Starting card is " + _StartingCard);
         LastPlayedCard.SetActive(true);
         SetLastPlayedCardSprite(_StartingCard);
 
@@ -162,11 +162,34 @@ public class GamePlay : MonoBehaviour
         __CPU = _PlayCard.getCPU();
         if (_PreviousLastPlayedCard != deck.LastCardPlayed)
         {
+            //GameObject playedCard = GameObject.Find(_PreviousLastPlayedCard.ToString());
+            //print("Destroy" + playedCard);
+            //print("Destroy" + GameObject.FindGameObjectWithTag("LastCardPlayed").ToString());
+            //Destroy(GameObject.FindGameObjectWithTag("LastCardPlayed"));
             SetPlayerHandCardSprites();
             SetLastPlayedCardSprite(deck.LastCardPlayed);
             //User has selected a valid card - CPU's turn
+            //GameObject playedCard = GameObject.Find(deck.LastCardPlayed.ToString());           
+            //Destroy(playedCard);
+            //playedCard.tag = "LastCardPlayed";
             yield return new WaitForSeconds(2f);
-            CPUPlaysCard();
+            if (__Player.Cards.Count == 0)
+            {
+                print("Player wins!");
+            }
+            //CPUPlaysCard();
+            ICard _PreviousLastPlayedCard2 = deck.LastCardPlayed;
+            PlayCard _PlayCard2 = new PlayCard(deck, __CPU, __Player);
+            deck = _PlayCard2.CPUPlaysCard();
+            __Player = _PlayCard2.getPlayer();
+            __CPU = _PlayCard2.getCPU();
+
+            SetLastPlayedCardSprite(deck.LastCardPlayed);
+            SetCPUHandCardSprites();
+            if (__Player.Cards.Count == 0)
+            {
+                print("CPU wins!");
+            }
         }
         //User has selected an invalid card - User's turn
     }
