@@ -32,7 +32,7 @@ namespace UnoDos.Decks.Entities
 
             DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.Reset, SPECIAL_CARD_VALUE));
             DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.LoseTwo, SPECIAL_CARD_VALUE));
-            DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.SwapDeck, SPECIAL_CARD_VALUE));
+            //DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.SwapDeck, SPECIAL_CARD_VALUE));
         }
 
         private void AddSeeThroughCard()
