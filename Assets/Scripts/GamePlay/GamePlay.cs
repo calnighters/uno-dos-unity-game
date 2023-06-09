@@ -37,6 +37,10 @@ public class GamePlay : MonoBehaviour
     public Sprite[] PinkCardSprites;
     public Sprite[] PurpleCardSprites;
     public Sprite[] SpecialCardSprites;
+    public Sprite[] ResetCardSprites;
+    public Sprite[] SwapDeckCardSprites;
+    public Sprite[] MinusTwoCardSprites;
+
     public Sprite BackCardSprite;
 
     public RenderSprites RenderSprites;
@@ -59,7 +63,7 @@ public class GamePlay : MonoBehaviour
         // Deal cards to the player
         //DealCards();
 
-        RenderSprites = new RenderSprites(GreenCardSprites, OrangeCardSprites, PinkCardSprites, PurpleCardSprites, SpecialCardSprites);
+        RenderSprites = new RenderSprites(GreenCardSprites, OrangeCardSprites, PinkCardSprites, PurpleCardSprites, SpecialCardSprites, ResetCardSprites, SwapDeckCardSprites, MinusTwoCardSprites);
     }
 
     public void DealCardsOnGameStart()
@@ -173,10 +177,10 @@ public class GamePlay : MonoBehaviour
             //Destroy(playedCard);
             //playedCard.tag = "LastCardPlayed";
             yield return new WaitForSeconds(2f);
-            if (__Player.Cards.Count == 0)
-            {
-                print("Player wins!");
-            }
+            //if (__Player.Cards.Count == 0)
+            //{
+            //    print("Player wins!");
+            //}
             //CPUPlaysCard();
             ICard _PreviousLastPlayedCard2 = deck.LastCardPlayed;
             PlayCard _PlayCard2 = new PlayCard(deck, __CPU, __Player);
@@ -186,10 +190,10 @@ public class GamePlay : MonoBehaviour
 
             SetLastPlayedCardSprite(deck.LastCardPlayed);
             SetCPUHandCardSprites();
-            if (__Player.Cards.Count == 0)
-            {
-                print("CPU wins!");
-            }
+            //if (__Player.Cards.Count == 0)
+            //{
+            //    print("CPU wins!");
+            //}
         }
         //User has selected an invalid card - User's turn
     }

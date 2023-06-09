@@ -17,15 +17,21 @@ namespace Assets.Scripts.Sprites
         public Sprite[] PinkCardSprites;
         public Sprite[] PurpleCardSprites;
         public Sprite[] SpecialCardSprites;
+        public Sprite[] ResetCardSprites;
+        public Sprite[] SwapDeckCardSprites;
+        public Sprite[] MinusTwoCardSprites;
         //public Sprite[] BackCardSprites;
 
-        public RenderSprites(Sprite[] greenCardSprites, Sprite[] orangeCardSprites, Sprite[] pinkCardSprites, Sprite[] purpleCardSprites, Sprite[] specialCardSprites)
+        public RenderSprites(Sprite[] greenCardSprites, Sprite[] orangeCardSprites, Sprite[] pinkCardSprites, Sprite[] purpleCardSprites, Sprite[] specialCardSprites, Sprite[] resetCardSprites, Sprite[] swapDeckCardSprites, Sprite[] minusTwoCardSprites)
         {
             GreenCardSprites = greenCardSprites;
             OrangeCardSprites = orangeCardSprites;
             PinkCardSprites = pinkCardSprites;
             PurpleCardSprites = purpleCardSprites;
             SpecialCardSprites = specialCardSprites;
+            ResetCardSprites = resetCardSprites;
+            SwapDeckCardSprites = swapDeckCardSprites;
+            MinusTwoCardSprites = minusTwoCardSprites;
             //BackCardSprites = backCardSprites;
         }
 
@@ -33,41 +39,117 @@ namespace Assets.Scripts.Sprites
         {
 
             Sprite[] _SpriteSetToUse = SpecialCardSprites;
+            CardColour _CardColour = cardDrawn.Colour;
 
-
-            if (cardDrawn.CardScore <= 9)
+            switch (_CardColour)
             {
-                CardColour _CardColour = cardDrawn.Colour;
-                switch (_CardColour)
-                {
-                    case CardColour.Orange:
+                case CardColour.Orange:
+                    if (cardDrawn.TypeOfCard == CardType.Reset)
+                    {
+                        _SpriteSetToUse = ResetCardSprites;
+                        return _SpriteSetToUse[0];
+                    }
+                    else if (cardDrawn.TypeOfCard == CardType.LoseTwo)
+                    {
+                        _SpriteSetToUse = MinusTwoCardSprites;
+                        return _SpriteSetToUse[0];
+                    }
+                    else if (cardDrawn.TypeOfCard == CardType.SwapDeck)
+                    {
+                        _SpriteSetToUse = SwapDeckCardSprites;
+                        return _SpriteSetToUse[0];
+                    }
+                    else
+                    {
                         _SpriteSetToUse = OrangeCardSprites;
-                        break;
-                    case CardColour.Pink:
+                        return _SpriteSetToUse[cardDrawn.CardScore];
+                    }
+                        
+                case CardColour.Pink:
+                    if (cardDrawn.TypeOfCard == CardType.Reset)
+                    {
+                        _SpriteSetToUse = ResetCardSprites;
+                        return _SpriteSetToUse[1];
+                    }
+                    else if (cardDrawn.TypeOfCard == CardType.LoseTwo)
+                    {
+                        _SpriteSetToUse = MinusTwoCardSprites;
+                        return _SpriteSetToUse[1];
+                    }
+                    else if (cardDrawn.TypeOfCard == CardType.SwapDeck)
+                    {
+                        _SpriteSetToUse = SwapDeckCardSprites;
+                        return _SpriteSetToUse[1];
+                    }
+                    else
+                    {
                         _SpriteSetToUse = PinkCardSprites;
-                        break;
-                    case CardColour.Green:
+                        return _SpriteSetToUse[cardDrawn.CardScore];
+                    }
+
+                case CardColour.Green:
+                    if (cardDrawn.TypeOfCard == CardType.Reset)
+                    {
+                        _SpriteSetToUse = ResetCardSprites;
+                        return _SpriteSetToUse[2];
+                    }
+                    else if (cardDrawn.TypeOfCard == CardType.LoseTwo)
+                    {
+                        _SpriteSetToUse = MinusTwoCardSprites;
+                        return _SpriteSetToUse[2];
+                    }
+                    else if (cardDrawn.TypeOfCard == CardType.SwapDeck)
+                    {
+                        _SpriteSetToUse = SwapDeckCardSprites;
+                        return _SpriteSetToUse[2];
+                    }
+                    else
+                    {
                         _SpriteSetToUse = GreenCardSprites;
-                        break;
-                    case CardColour.Purple:
+                        return _SpriteSetToUse[cardDrawn.CardScore];
+                    }
+
+                case CardColour.Purple:
+                    if (cardDrawn.TypeOfCard == CardType.Reset)
+                    {
+                        _SpriteSetToUse = ResetCardSprites;
+                        return _SpriteSetToUse[3];
+                    }
+                    else if (cardDrawn.TypeOfCard == CardType.LoseTwo)
+                    {
+                        _SpriteSetToUse = MinusTwoCardSprites;
+                        return _SpriteSetToUse[3];
+                    }
+                    else if (cardDrawn.TypeOfCard == CardType.SwapDeck)
+                    {
+                        _SpriteSetToUse = SwapDeckCardSprites;
+                        return _SpriteSetToUse[3];
+                    }
+                    else
+                    {
                         _SpriteSetToUse = PurpleCardSprites;
-                        break;
-                }
-
-                return _SpriteSetToUse[cardDrawn.CardScore];
+                        return _SpriteSetToUse[cardDrawn.CardScore];
+                    }
+                   
             }
+        return _SpriteSetToUse[3];
 
+            /*
             switch (cardDrawn.TypeOfCard)
             {
                 case CardType.Reset:
+                    _SpriteSetToUse = ResetCardSprites;
                     return _SpriteSetToUse[0];
                 case CardType.LoseTwo:
+                    _SpriteSetToUse = MinusTwoCardSprites;
                     return _SpriteSetToUse[1];
                 case CardType.SwapDeck:
+                    _SpriteSetToUse = SwapDeckCardSprites;
                     return _SpriteSetToUse[2];
                 default:
                     return _SpriteSetToUse[3];
             }
+            */
         }
     }
 }
