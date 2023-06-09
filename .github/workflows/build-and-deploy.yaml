@@ -13,8 +13,6 @@ jobs:
         targetPlatform:
           - StandaloneOSX # Build a macOS standalone (Intel 64-bit).
           - StandaloneWindows # Build a Windows standalone.
-          - StandaloneWindows64 # Build a Windows 64-bit standalone.
-          - WebGL # WebGL.
     steps:
       - uses: actions/checkout@v2
         with:
