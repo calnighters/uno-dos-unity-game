@@ -16,29 +16,27 @@ namespace Assets.Scripts.Sprites
         public Sprite[] OrangeCardSprites;
         public Sprite[] PinkCardSprites;
         public Sprite[] PurpleCardSprites;
-        public Sprite[] SpecialCardSprites;
+        public Sprite[] SeeThroughSprite;
         public Sprite[] ResetCardSprites;
         public Sprite[] SwapDeckCardSprites;
         public Sprite[] MinusTwoCardSprites;
-        //public Sprite[] BackCardSprites;
 
-        public RenderSprites(Sprite[] greenCardSprites, Sprite[] orangeCardSprites, Sprite[] pinkCardSprites, Sprite[] purpleCardSprites, Sprite[] specialCardSprites, Sprite[] resetCardSprites, Sprite[] swapDeckCardSprites, Sprite[] minusTwoCardSprites)
+        public RenderSprites(Sprite[] greenCardSprites, Sprite[] orangeCardSprites, Sprite[] pinkCardSprites, Sprite[] purpleCardSprites, Sprite[] seeThroughSprite, Sprite[] resetCardSprites, Sprite[] swapDeckCardSprites, Sprite[] minusTwoCardSprites)
         {
             GreenCardSprites = greenCardSprites;
             OrangeCardSprites = orangeCardSprites;
             PinkCardSprites = pinkCardSprites;
             PurpleCardSprites = purpleCardSprites;
-            SpecialCardSprites = specialCardSprites;
+            SeeThroughSprite = seeThroughSprite;
             ResetCardSprites = resetCardSprites;
             SwapDeckCardSprites = swapDeckCardSprites;
             MinusTwoCardSprites = minusTwoCardSprites;
-            //BackCardSprites = backCardSprites;
         }
 
         public Sprite GetSprite(ICard cardDrawn)
         {
 
-            Sprite[] _SpriteSetToUse = SpecialCardSprites;
+            Sprite[] _SpriteSetToUse = SeeThroughSprite;
             CardColour _CardColour = cardDrawn.Colour;
 
             switch (_CardColour)
@@ -132,24 +130,7 @@ namespace Assets.Scripts.Sprites
                     }
                    
             }
-        return _SpriteSetToUse[3];
-
-            /*
-            switch (cardDrawn.TypeOfCard)
-            {
-                case CardType.Reset:
-                    _SpriteSetToUse = ResetCardSprites;
-                    return _SpriteSetToUse[0];
-                case CardType.LoseTwo:
-                    _SpriteSetToUse = MinusTwoCardSprites;
-                    return _SpriteSetToUse[1];
-                case CardType.SwapDeck:
-                    _SpriteSetToUse = SwapDeckCardSprites;
-                    return _SpriteSetToUse[2];
-                default:
-                    return _SpriteSetToUse[3];
-            }
-            */
+        return _SpriteSetToUse[0];
         }
     }
 }

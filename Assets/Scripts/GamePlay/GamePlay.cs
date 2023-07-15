@@ -142,6 +142,8 @@ public class GamePlay : MonoBehaviour
             playerDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = RenderSprites.GetSprite(_DrawnCard);
             playerDrawnCard.transform.SetParent(PlayerArea.transform, false);
             playerDrawnCard.name = _DrawnCard.ToString();
+
+            __Player.Cards.Add(_DrawnCard);
             print("Player picked up");
             //User has selected to pick up a card - CPU's turn
             yield return new WaitForSeconds(2f);
@@ -156,11 +158,12 @@ public class GamePlay : MonoBehaviour
         StartCoroutine(UserPlaysCard(currentCardClicked));
     }
 
-    public IEnumerator UserPlaysCard(GameObject currentCardClicked)
+    public IEnumerator UserPlaysCard(GameObject currentCardClickedGO)
     {
         yield return new WaitForSeconds(.01f);
         ICard _PreviousLastPlayedCard = deck.LastCardPlayed;
-        PlayCard _PlayCard = new PlayCard(deck, currentCardClicked.name, __Player, __CPU);
+        ICard _currentCardClickedCard = __Player.Cards.FirstOrDefault(card => card.ToString() == currentCardClickedGO.name);
+        PlayCard _PlayCard = new PlayCard(deck, _currentCardClickedCard, __Player, __CPU);
         deck = _PlayCard.PlayerPlaysCard();
         __Player = _PlayCard.getPlayer();
         __CPU = _PlayCard.getCPU();
