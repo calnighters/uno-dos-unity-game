@@ -35,8 +35,6 @@ public class PlayCard : MonoBehaviour
 
     public IDeck PlayerPlaysCard()
     {
-        ICard _ShownCard = __Deck.LastCardPlayed;
-
         __Deck = __Player.PlayCard(__PlayedCard, __Deck);
         if (__PlayedCard != null)
         {   
@@ -75,7 +73,6 @@ public class PlayCard : MonoBehaviour
             //Functionality for swapping decks between player and CPU. Easier in this class than player / CPU classes
             if (__Deck.LastCardPlayed.TypeOfCard == CardType.SwapDeck)
             {
-                //Bug here - Are player cards not updated??
                 swapDecks();
             }
             print("CPU played " + __Deck.LastCardPlayed.ToString());
