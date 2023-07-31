@@ -1,29 +1,16 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnoDos.Cards.Enums;
 using UnoDos.Cards.Interfaces;
-using UnoDos.Decks.Entities;
 using UnoDos.Decks.Interfaces;
-using UnoDos.Players.Entities;
 using UnoDos.Players.Interfaces;
 
 public class PlayCard : MonoBehaviour
 {
-
+    public ICPU __CPU;
     public IDeck __Deck;
     public ICard __PlayedCard;
     public IPlayer __Player;
-    public ICPU __CPU;
-
-    public PlayCard(IDeck deck, ICard playedCard, IPlayer player, ICPU cpu)
-    {
-        __Deck = deck;
-        __PlayedCard = playedCard;
-        __Player = player;
-        __CPU = cpu;
-    }
 
     public PlayCard(IDeck deck, ICPU cpu, IPlayer player)
     {
@@ -33,32 +20,12 @@ public class PlayCard : MonoBehaviour
         __CPU =cpu;
     }
 
-    public IDeck PlayerPlaysCard()
+    public PlayCard(IDeck deck, ICard playedCard, IPlayer player, ICPU cpu)
     {
-        __Deck = __Player.PlayCard(__PlayedCard, __Deck);
-        if (__PlayedCard != null)
-        {   
-            //Don't swap if Player can't play
-            if (__PlayedCard == __Deck.LastCardPlayed)
-            {
-                //Functionality for swapping decks between player and CPU. Easier in this class than player / CPU classes
-                if (__PlayedCard.TypeOfCard == CardType.SwapDeck)
-                {
-                    swapDecks();
-                }
-                print("Player played " + __PlayedCard.ToString());
-            }
-            //Player can't play
-            else
-            {
-                print("Player unable to play " + __PlayedCard.ToString());
-            }
-        }
-        else
-        {
-            print("Player card null");
-        }
-        return __Deck;
+        __Deck = deck;
+        __PlayedCard = playedCard;
+        __Player = player;
+        __CPU = cpu;
     }
 
     public IDeck CPUPlaysCard()
@@ -73,33 +40,37 @@ public class PlayCard : MonoBehaviour
             //Functionality for swapping decks between player and CPU. Easier in this class than player / CPU classes
             if (__Deck.LastCardPlayed.TypeOfCard == CardType.SwapDeck)
             {
-                swapDecks();
+                SwapDecks();
             }
-            print("CPU played " + __Deck.LastCardPlayed.ToString());
-        }
-        //CPU can't play
-        else
-        {
-            //Draw card
-            print("CPU picked up");
         }
         return __Deck;
     }
 
-    public IPlayer getPlayer()
+    public IDeck PlayerPlaysCard()
     {
-        return __Player;
+        __Deck = __Player.PlayCard(__PlayedCard, __Deck);
+        if (__PlayedCard != null)
+        {   
+            //Don't swap if Player can't play
+            if (__PlayedCard == __Deck.LastCardPlayed)
+            {
+                //Functionality for swapping decks between player and CPU. Easier in this class than player / CPU classes
+                if (__PlayedCard.TypeOfCard == CardType.SwapDeck)
+                {
+                    SwapDecks();
+                }
+            }
+        }
+        return __Deck;
     }
 
-    public ICPU getCPU()
+    private void SwapDecks()
     {
-        return __CPU;
-    }
-
-    private void swapDecks()
-    {
-        List<ICard> tempPlayerCards = __Player.Cards;
+        List<ICard> _TemporaryPlayerCards = __Player.Cards;
         __Player.Cards = __CPU.Cards;
-        __CPU.Cards = tempPlayerCards;
+        __CPU.Cards = _TemporaryPlayerCards;
     }
+
+    public ICPU CPU => __CPU;
+    public IPlayer Player => __Player;
 }

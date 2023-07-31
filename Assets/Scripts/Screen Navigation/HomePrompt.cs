@@ -1,37 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class HomePrompt : MonoBehaviour
 {
     // Start is called before the first frame update
-    public string mainMenu;
-    public GameObject homePromptUI;
-    void Start()
-    {
-        
-    }
+    public GameObject __HomePromptUI;
+    public string __MainMenu;
 
-    // Update is called once per frame
-    void Update()
+    public void ContinueGame()
     {
-        
-    }
-
-    public void OpenHomeOption()
-    {
-        homePromptUI.SetActive(true);
+        __HomePromptUI.SetActive(false);
     }
 
     public void GoToMainMenu()
     {
-        SceneManager.LoadScene(mainMenu);
-
+        SceneManager.LoadScene(__MainMenu);
     }
 
-    public void continueGame()
+    public void OpenHomeOption()
     {
-        homePromptUI.SetActive(false);
+        __HomePromptUI.SetActive(true);
     }
 }

@@ -112,11 +112,11 @@ namespace UnoDos.Decks.Entities
 
             Reshuffle();
 
-            List<ICard> drawnCards = DeckOfCards.Take(count).ToList();
+            List<ICard> _DrawnCards = DeckOfCards.Take(count).ToList();
 
             //Remove the drawn cards from the draw pile
-            DeckOfCards.RemoveAll(card => drawnCards.Contains(card));
-            return drawnCards;
+            DeckOfCards.RemoveAll(card => _DrawnCards.Contains(card));
+            return _DrawnCards;
         }
 
         public ICard DrawInitialCard()
@@ -143,16 +143,16 @@ namespace UnoDos.Decks.Entities
         // Shuffle Card Method
         public void Shuffle()
         {
-            Random random = new Random();
+            Random _Random = new Random();
 
-            List<ICard> cards = DeckOfCards;
+            List<ICard> _Cards = DeckOfCards;
 
-            for (int i = cards.Count - 1; i >= 0; --i)// may need to check this for condition
+            for (int i = _Cards.Count - 1; i >= 0; --i)// may need to check this for condition
             {
-                int j = random.Next(i + 1);
-                ICard temp = cards[i];
-                cards[i] = cards[j];
-                cards[j] = temp;
+                int j = _Random.Next(i + 1);
+                ICard _TemporaryCard = _Cards[i];
+                _Cards[i] = _Cards[j];
+                _Cards[j] = _TemporaryCard;
 
             }
         }

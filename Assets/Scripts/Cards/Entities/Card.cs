@@ -13,6 +13,11 @@ namespace UnoDos.Cards.Entities
             return new Card { CardID = cardID, Colour = colour, TypeOfCard = cardType, CardScore = cardScore };
         }
 
+        public override string ToString()
+        {
+            return Colour.GetDescriptionFromEnum() + " " + TypeOfCard.GetDescriptionFromEnum();
+        }
+
         public int CardID { get; set; }
         public Image CardImage { get; set; }
         public int CardScore { get; set; }
@@ -27,9 +32,5 @@ namespace UnoDos.Cards.Entities
         public CardType TypeOfCard { get; set; }
 
         // add an override toString method
-        public override string ToString()
-        {
-            return Colour.GetDescriptionFromEnum() + " " + TypeOfCard.GetDescriptionFromEnum();
-        }
     }
 }

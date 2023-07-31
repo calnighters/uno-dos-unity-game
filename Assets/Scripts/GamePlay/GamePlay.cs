@@ -1,10 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnoDos.Decks.Entities;
-using UnoDos.Cards.Entities;
 using UnoDos.Cards.Interfaces;
-using UnoDos.Cards.Enums;
 using NsUnityEngineUI = UnityEngine.UI;
 using Assets.Scripts.Sprites;
 using System.Linq;
@@ -12,118 +9,61 @@ using UnoDos.Decks.Interfaces;
 using UnoDos.Players.Interfaces;
 using UnoDos.Players.Entities;
 using UnityEngine.UI;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using System;
-using System.Threading;
 
 public class GamePlay : MonoBehaviour
 {
+    private const int NO_OF_CARDS_TO_DEAL = 10;
+
     // Start is called before the first frame update
-    public IDeck deck;
-
-    private IPlayer __Player;
+    public Sprite __BackCardSprite;
+    public GameObject __CardSprite;
     private ICPU __CPU;
+    public IDeck __Deck;
+    public GameObject __DeckButton;
+    public Sprite[] __GreenCardSprites;
+    public GameObject __LastPlayedCard; 
+    public Sprite[] __MinusTwoCardSprites;
+    public GameObject __OpponentArea;
+    public Sprite[] __OrangeCardSprites;
+    public Sprite[] __PinkCardSprites;
+    private IPlayer __Player;
+    public GameObject __PlayerArea;
+    public Sprite[] __PurpleCardSprites;
+    public RenderSprites __RenderSprites;
+    public Sprite[] __ResetCardSprites;
+    public Sprite[] __SpecialCardSprites;
+    public Sprite[] __SwapDeckCardSprites;
 
-    public GameObject CardSprite;
-    public GameObject PlayerArea;
-
-    public GameObject OpponentArea;
-
-    public GameObject deckButton;
-
-    public Sprite[] GreenCardSprites;
-    public Sprite[] OrangeCardSprites;
-    public Sprite[] PinkCardSprites;
-    public Sprite[] PurpleCardSprites;
-    public Sprite[] SpecialCardSprites;
-    public Sprite[] ResetCardSprites;
-    public Sprite[] SwapDeckCardSprites;
-    public Sprite[] MinusTwoCardSprites;
-
-    public Sprite BackCardSprite;
-
-    public RenderSprites RenderSprites;
-
-    public GameObject LastPlayedCard;
-
-    void Start()
+    //Co-routine is used to update canvas mid method rather than waiting until end
+    public void CardClicked(GameObject currentCardClicked)
     {
-        __Player = new Player();
-        __CPU = new CPU();
-        // Create a new instance of a Deck
-        deck = new Deck();
+        StartCoroutine(UserPlaysCard(currentCardClicked));
+    }
 
-        // Create the deck of cards
-        deck.CreateDeck();
-
-        // shuffle the deck
-        deck.Shuffle();
-
-        // Deal cards to the player
-        //DealCards();
-
-        RenderSprites = new RenderSprites(GreenCardSprites, OrangeCardSprites, PinkCardSprites, PurpleCardSprites, SpecialCardSprites, ResetCardSprites, SwapDeckCardSprites, MinusTwoCardSprites);
+    private void CPUPlaysCard()
+    {
+        PlayCard _PlayCard = new PlayCard(__Deck, __CPU, __Player);
+        __Deck = _PlayCard.CPUPlaysCard();
+        __Player = _PlayCard.Player;
+        __CPU = _PlayCard.CPU;
+        SetPlayerHandCardSprites();
+        SetCPUHandCardSprites();
+        SetLastPlayedCardSprite(__Deck.LastCardPlayed);
     }
 
     public void DealCardsOnGameStart()
     {
+        __Player.Cards = __Deck.Deal(NO_OF_CARDS_TO_DEAL);
 
-        int numberOfCardsToDeal = 10;
-
-        __Player.Cards = deck.Deal(numberOfCardsToDeal);
-
-        __CPU.Cards = deck.Deal(numberOfCardsToDeal);
+        __CPU.Cards = __Deck.Deal(NO_OF_CARDS_TO_DEAL);
 
         SetPlayerHandCardSprites();
 
         SetCPUHandCardSprites();
 
-        ICard _StartingCard = deck.DrawInitialCard();
-        print("Starting card is " + _StartingCard);
-        LastPlayedCard.SetActive(true);
+        ICard _StartingCard = __Deck.DrawInitialCard();
+        __LastPlayedCard.SetActive(true);
         SetLastPlayedCardSprite(_StartingCard);
-
-    }
-
-    private void SetPlayerHandCardSprites()
-    {
-        PlayerArea.transform.DetachChildren();
-
-        foreach (ICard card in __Player.Cards)
-        {
-            GameObject playerDrawnCard = Instantiate(CardSprite, new Vector3(0, 0, 0), Quaternion.identity);
-            playerDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = RenderSprites.GetSprite(card);
-            //Instead of calling the method directly use a co-routine otherwise the canvas only gets updated after the method is finished
-            playerDrawnCard.GetComponent<Button>().onClick.AddListener(() => CardClicked(playerDrawnCard));
-            playerDrawnCard.transform.SetParent(PlayerArea.transform, false);
-            playerDrawnCard.name = card.ToString();
-
-        }
-    }
-
-    private void SetCPUHandCardSprites()
-    {
-        OpponentArea.transform.DetachChildren();
-
-        foreach (ICard card in __CPU.Cards)
-        {
-            GameObject cpuDrawnCard = Instantiate(CardSprite, new Vector3(0, 0, 0), Quaternion.identity);
-            cpuDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = BackCardSprite;
-            cpuDrawnCard.transform.SetParent(OpponentArea.transform, false);
-            cpuDrawnCard.name = card.ToString();
-        }
-    }
-
-    private void SetLastPlayedCardSprite(ICard card)
-    {
-        LastPlayedCard.GetComponent<NsUnityEngineUI.Image>().sprite = RenderSprites.GetSprite(card);
-    }
-
-    //Co-routine is used to update canvas mid method rather than waiting until end
-    public void DeckClicked()
-    {
-        StartCoroutine(DealCards());
     }
 
     public IEnumerator DealCards()
@@ -136,67 +76,106 @@ public class GamePlay : MonoBehaviour
 
         else
         {
-            ICard _DrawnCard = deck.DrawCard();
+            ICard _DrawnCard = __Deck.DrawCard();
 
-            GameObject playerDrawnCard = Instantiate(CardSprite, new Vector3(0, 0, 0), Quaternion.identity);
-            playerDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = RenderSprites.GetSprite(_DrawnCard);
-            playerDrawnCard.transform.SetParent(PlayerArea.transform, false);
-            playerDrawnCard.name = _DrawnCard.ToString();
+            GameObject _PlayerDrawnCard = Instantiate(__CardSprite, new Vector3(0, 0, 0), Quaternion.identity);
+            _PlayerDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = __RenderSprites.GetSprite(_DrawnCard);
+            _PlayerDrawnCard.transform.SetParent(__PlayerArea.transform, false);
+            _PlayerDrawnCard.name = _DrawnCard.ToString();
 
             __Player.Cards.Add(_DrawnCard);
-            print("Player picked up");
             SetPlayerHandCardSprites();
 
             //User has selected to pick up a card - CPU's turn
             yield return new WaitForSeconds(2f);
             CPUPlaysCard();
         }
-
     }
 
     //Co-routine is used to update canvas mid method rather than waiting until end
-    public void CardClicked(GameObject currentCardClicked)
+    public void DeckClicked()
     {
-        StartCoroutine(UserPlaysCard(currentCardClicked));
+        StartCoroutine(DealCards());
+    }
+
+    public void Start()
+    {
+        __Player = new Player();
+        __CPU = new CPU();
+        // Create a new instance of a Deck
+        __Deck = new Deck();
+
+        // Create the deck of cards
+        __Deck.CreateDeck();
+
+        // shuffle the deck
+        __Deck.Shuffle();
+
+        // Deal cards to the player
+        //DealCards();
+
+        __RenderSprites = new RenderSprites(__GreenCardSprites, __OrangeCardSprites, __PinkCardSprites, __PurpleCardSprites, __SpecialCardSprites, __ResetCardSprites, __SwapDeckCardSprites, __MinusTwoCardSprites);
+    }
+
+    private void SetCPUHandCardSprites()
+    {
+        __OpponentArea.transform.DetachChildren();
+
+        foreach (ICard _Card in __CPU.Cards)
+        {
+            GameObject _CPUDrawnCard = Instantiate(__CardSprite, new Vector3(0, 0, 0), Quaternion.identity);
+            _CPUDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = __BackCardSprite;
+            _CPUDrawnCard.transform.SetParent(__OpponentArea.transform, false);
+            _CPUDrawnCard.name = _Card.ToString();
+        }
+    }
+
+    private void SetLastPlayedCardSprite(ICard card)
+    {
+        __LastPlayedCard.GetComponent<NsUnityEngineUI.Image>().sprite = __RenderSprites.GetSprite(card);
+    }
+
+    private void SetPlayerHandCardSprites()
+    {
+        __PlayerArea.transform.DetachChildren();
+
+        foreach (ICard _Card in __Player.Cards)
+        {
+            GameObject _PlayerDrawnCard = Instantiate(__CardSprite, new Vector3(0, 0, 0), Quaternion.identity);
+            _PlayerDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = __RenderSprites.GetSprite(_Card);
+            //Instead of calling the method directly use a co-routine otherwise the canvas only gets updated after the method is finished
+            _PlayerDrawnCard.GetComponent<Button>().onClick.AddListener(() => CardClicked(_PlayerDrawnCard));
+            _PlayerDrawnCard.transform.SetParent(__PlayerArea.transform, false);
+            _PlayerDrawnCard.name = _Card.ToString();
+        }
     }
 
     public IEnumerator UserPlaysCard(GameObject currentCardClickedGO)
     {
         yield return new WaitForSeconds(.01f);
-        ICard _PreviousLastPlayedCard = deck.LastCardPlayed;
-        ICard _currentCardClickedCard = __Player.Cards.FirstOrDefault(card => card.ToString() == currentCardClickedGO.name);
-        PlayCard _PlayCard = new PlayCard(deck, _currentCardClickedCard, __Player, __CPU);
-        deck = _PlayCard.PlayerPlaysCard();
-        __Player = _PlayCard.getPlayer();
-        __CPU = _PlayCard.getCPU();
+        ICard _PreviousLastPlayedCard = __Deck.LastCardPlayed;
+        ICard _CurrentCardClickedCard = __Player.Cards.FirstOrDefault(card => card.ToString() == currentCardClickedGO.name);
+        PlayCard _PlayCard = new PlayCard(__Deck, _CurrentCardClickedCard, __Player, __CPU);
+        __Deck = _PlayCard.PlayerPlaysCard();
+        __Player = _PlayCard.Player;
+        __CPU = _PlayCard.CPU;
         SetPlayerHandCardSprites();
         SetCPUHandCardSprites();
-        SetLastPlayedCardSprite(deck.LastCardPlayed);
-        //if (__Player.Cards.Count == 0)
-        //{
-        //    print("Player wins!");
-        //}
-        if (_PreviousLastPlayedCard != deck.LastCardPlayed)
+        SetLastPlayedCardSprite(__Deck.LastCardPlayed);
+        if (__Player.Cards.Count == 0)
+        {
+            print("Player wins!");
+        }
+        if (_PreviousLastPlayedCard != __Deck.LastCardPlayed)
         {
             //User has selected a valid card - CPU's turn
             yield return new WaitForSeconds(2f);
             CPUPlaysCard();
-            //if (__Player.Cards.Count == 0)
-            //{
-            //    print("CPU wins!");
-            //}
+            if (__Player.Cards.Count == 0)
+            {
+                print("CPU wins!");
+            }
         }
         //User has selected an invalid card - User's turn
-    }
-
-    private void CPUPlaysCard()
-    {
-        PlayCard _PlayCard = new PlayCard(deck, __CPU, __Player);
-        deck = _PlayCard.CPUPlaysCard();
-        __Player = _PlayCard.getPlayer();
-        __CPU = _PlayCard.getCPU();
-        SetPlayerHandCardSprites();
-        SetCPUHandCardSprites();
-        SetLastPlayedCardSprite(deck.LastCardPlayed);
     }
 }

@@ -11,19 +11,17 @@ namespace UnoDos.Players.Entities
 {
     public class CPU : Player, ICPU
     {
-        
-
         //Method for CPU to play a card after the list of playable cards has been generated
         public IDeck PlayCardCPU(IDeck currentDeck)
         {
             ICard _ShownCard = currentDeck.LastCardPlayed;
             //When comparing compare to most recent non see through  card. If none before - play any
             //Set shown card to last non-see through card. Otherwise keep as last played see through (i.e. only see through have been played)
-            foreach (ICard card in currentDeck.PlayedCards)
+            foreach (ICard _Card in currentDeck.PlayedCards)
             {
-                if (card.TypeOfCard != CardType.SeeThrough)
+                if (_Card.TypeOfCard != CardType.SeeThrough)
                 {
-                    _ShownCard = card;
+                    _ShownCard = _Card;
                 }
             }
 
@@ -34,8 +32,8 @@ namespace UnoDos.Players.Entities
             {
                 //Select a random playable card
                 Random _Random = new Random();
-                int _Index1 = _Random.Next(PlayableCards.Count());
-                ICard _PlayedCard = PlayableCards[_Index1];
+                int SelectedRandomCardIndex = _Random.Next(PlayableCards.Count());
+                ICard _PlayedCard = PlayableCards[SelectedRandomCardIndex];
                 //Remove card from hand
                 Cards.Remove(_PlayedCard);
                 //Add card to played
@@ -88,7 +86,6 @@ namespace UnoDos.Players.Entities
             return PlayableCards;
         }
 
-        //public bool HasCPUPlayedCard { get; private set; }
         public List<ICard> PlayableCards { get; private set; }
     }
 }

@@ -22,7 +22,7 @@ namespace UnoDos.Players.Entities
         {
             bool _IsShownCardSpecial = Card.SpecialCards.Any(specialCard => specialCard == shownCard.TypeOfCard);
             bool _IsColourValid = playedCard.Colour == shownCard.Colour;
-            
+
             //If see through
             if (playedCard.Colour == CardColour.SeeThrough)
             {
@@ -54,21 +54,21 @@ namespace UnoDos.Players.Entities
                     }
 
                     //Wrap around 0-9 (10-9)
-                    int cardMinusOne = playedCard.CardScore - 1;
-                    if (cardMinusOne == -1)
+                    int _CardMinusOne = playedCard.CardScore - 1;
+                    if (_CardMinusOne == -1)
                     {
-                        cardMinusOne = 9;
+                        _CardMinusOne = 9;
                     }
                     //Wrap around 9-0 (10-1)
-                    int cardPlusOne = playedCard.CardScore + 1;
-                    if (cardPlusOne == 10)
+                    int _CardPlusOne = playedCard.CardScore + 1;
+                    if (_CardPlusOne == 10)
                     {
-                        cardPlusOne = 0;
+                        _CardPlusOne = 0;
                     }
 
                     //If previous number card not 1 above or below
-                    if (shownCard.CardScore != cardMinusOne
-                        && shownCard.CardScore != cardPlusOne
+                    if (shownCard.CardScore != _CardMinusOne
+                        && shownCard.CardScore != _CardPlusOne
                         && !_IsShownCardSpecial)
                     {
                         Errors.Add(string.Format(INVALID_NUMBER_ERROR, playedCard.CardScore.ToString(), shownCard.CardScore.ToString()));
@@ -109,8 +109,8 @@ namespace UnoDos.Players.Entities
                 for (int i = 0; i < 2; i++)
                 {
                     Random _Random = new Random();
-                    int _Index = _Random.Next(Cards.Count());
-                    ICard _CardToLose = Cards[_Index];
+                    int _SelectedRandomIndex = _Random.Next(Cards.Count());
+                    ICard _CardToLose = Cards[_SelectedRandomIndex];
                     Cards.Remove(_CardToLose);
                     currentDeck.DeckOfCards.Add(_CardToLose);
                 }
@@ -124,11 +124,11 @@ namespace UnoDos.Players.Entities
             ICard _ShownCard = currentDeck.LastCardPlayed;
             //When comparing compare to most recent non see through  card. If none before - play any
             //Set shown card to last non-see through card. Otherwise keep as last played see through (i.e. only see through have been played)
-            foreach (ICard card in currentDeck.PlayedCards)
+            foreach (ICard _Card in currentDeck.PlayedCards)
             {
-                if (card.TypeOfCard != CardType.SeeThrough)
+                if (_Card.TypeOfCard != CardType.SeeThrough)
                 {
-                    _ShownCard = card;
+                    _ShownCard = _Card;
                 }
             }
 
@@ -159,7 +159,7 @@ namespace UnoDos.Players.Entities
                         //next card can be any card - no action - check made on next played card
                         break;
                 }
-                
+
             }
             return currentDeck;
         }
@@ -180,7 +180,7 @@ namespace UnoDos.Players.Entities
 
         public List<ICard> Cards { get; set; }
         public List<string> Errors => __Errors = __Errors ?? new List<string>();
-        public SpecialCardPlayed SpecialCardPlayed { get; set; }
         public string PlayerName { get; set; }
+        public SpecialCardPlayed SpecialCardPlayed { get; set; }
     }
 }
