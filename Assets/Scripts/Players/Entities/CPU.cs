@@ -1,4 +1,3 @@
-using Assets.Scripts.Players.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,19 +10,31 @@ namespace UnoDos.Players.Entities
 {
     public class CPU : Player, ICPU
     {
+        private IDeck LoseTwoCards(IDeck currentDeck)
+        {
+            if (Cards.Count < 2)
+            {
+                currentDeck.DeckOfCards.Add(Cards[0]);
+                Cards = new List<ICard>();
+            }
+            else
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    Random _Random = new Random();
+                    int _SelectedRandomIndex = _Random.Next(Cards.Count());
+                    ICard _CardToLose = Cards[_SelectedRandomIndex];
+                    Cards.Remove(_CardToLose);
+                    currentDeck.DeckOfCards.Add(_CardToLose);
+                }
+            }
+            return currentDeck;
+        }
+
         //Method for CPU to play a card after the list of playable cards has been generated
         public IDeck PlayCardCPU(IDeck currentDeck)
         {
             ICard _ShownCard = currentDeck.LastCardPlayed;
-            //When comparing compare to most recent non see through  card. If none before - play any
-            //Set shown card to last non-see through card. Otherwise keep as last played see through (i.e. only see through have been played)
-            foreach (ICard _Card in currentDeck.PlayedCards)
-            {
-                if (_Card.TypeOfCard != CardType.SeeThrough)
-                {
-                    _ShownCard = _Card;
-                }
-            }
 
             //List of possible CPU cards
             PlayableCards = PossibleCards(_ShownCard);
@@ -34,30 +45,18 @@ namespace UnoDos.Players.Entities
                 Random _Random = new Random();
                 int SelectedRandomCardIndex = _Random.Next(PlayableCards.Count());
                 ICard _PlayedCard = PlayableCards[SelectedRandomCardIndex];
+                if (_PlayedCard.TypeOfCard == CardType.SeeThrough)
+                {
+                    _PlayedCard.Colour = _ShownCard.Colour;
+                }
                 //Remove card from hand
                 Cards.Remove(_PlayedCard);
                 //Add card to played
                 currentDeck.PlayedCards.Add(_PlayedCard);
                 //Action of played card
-                switch (_PlayedCard.TypeOfCard)
+                if (_PlayedCard.TypeOfCard == CardType.LoseTwo)
                 {
-                    case CardType.SeeThrough:
-                        //Set see through 
-                        //_PlayedCard.Colour = _ShownCard.Colour;
-                        break;
-                    case CardType.LoseTwo:
-                        SpecialCardPlayed = SpecialCardPlayed.LoseTwo;
-                        //remove 2 random cards from CPU hand - not the played card!!!
-                        currentDeck = LoseTwoCards(currentDeck);
-                        break;
-                    case CardType.SwapDeck:
-                        SpecialCardPlayed = SpecialCardPlayed.SwapDeck;
-                        //swap player and cpu cards - done in PlayCard class
-                        break;
-                    case CardType.Reset:
-                        SpecialCardPlayed = SpecialCardPlayed.Reset;
-                        //next card can be any card - no action - check made on next played card
-                        break;
+                    currentDeck = LoseTwoCards(currentDeck);
                 }
             }
             //Can't play - pick up
@@ -65,7 +64,7 @@ namespace UnoDos.Players.Entities
             {
                 DrawCard(currentDeck);
             }
-            
+
             return currentDeck;
         }
 

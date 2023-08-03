@@ -1,16 +1,15 @@
+using Assets.Scripts.Screen_Navigation.StaticClasses;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class GameOverScreen : MonoBehaviour
 {
-    public string __GameScene;
-    public string __MainMenu;
     public void PlayAgain()
     {
-        SceneManager.LoadScene(__GameScene);
+        SceneManager.LoadScene(SceneNames.GAME_SCREEN);
     }
 
     public void QuitToMainMenu()
     {
-        SceneManager.LoadScene(__MainMenu);
+        SceneManager.LoadScene(SceneNames.MAIN_MENU);
     }
 }

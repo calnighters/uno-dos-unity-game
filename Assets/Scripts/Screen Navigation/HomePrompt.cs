@@ -1,3 +1,4 @@
+using Assets.Scripts.Screen_Navigation.StaticClasses;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -5,7 +6,6 @@ public class HomePrompt : MonoBehaviour
 {
     // Start is called before the first frame update
     public GameObject __HomePromptUI;
-    public string __MainMenu;
 
     public void ContinueGame()
     {
@@ -14,7 +14,7 @@ public class HomePrompt : MonoBehaviour
 
     public void GoToMainMenu()
     {
-        SceneManager.LoadScene(__MainMenu);
+        SceneManager.LoadScene(SceneNames.MAIN_MENU);
     }
 
     public void OpenHomeOption()

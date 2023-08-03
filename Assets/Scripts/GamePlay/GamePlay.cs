@@ -9,6 +9,9 @@ using UnoDos.Decks.Interfaces;
 using UnoDos.Players.Interfaces;
 using UnoDos.Players.Entities;
 using UnityEngine.UI;
+using Assets.Scripts.Screen_Navigation.StaticClasses;
+using UnityEngine.SceneManagement;
+using UnoDos.Cards.Enums;
 
 public class GamePlay : MonoBehaviour
 {
@@ -21,11 +24,12 @@ public class GamePlay : MonoBehaviour
     public IDeck __Deck;
     public GameObject __DeckButton;
     public Sprite[] __GreenCardSprites;
-    public GameObject __LastPlayedCard; 
+    public GameObject __LastPlayedCard;
     public Sprite[] __MinusTwoCardSprites;
     public GameObject __OpponentArea;
     public Sprite[] __OrangeCardSprites;
     public Sprite[] __PinkCardSprites;
+    private PlayCard __PlayCard;
     private IPlayer __Player;
     public GameObject __PlayerArea;
     public Sprite[] __PurpleCardSprites;
@@ -42,10 +46,9 @@ public class GamePlay : MonoBehaviour
 
     private void CPUPlaysCard()
     {
-        PlayCard _PlayCard = new PlayCard(__Deck, __CPU, __Player);
-        __Deck = _PlayCard.CPUPlaysCard();
-        __Player = _PlayCard.Player;
-        __CPU = _PlayCard.CPU;
+        __Deck = __PlayCard.CPUPlaysCard();
+        __Player = __PlayCard.Player;
+        __CPU = __PlayCard.CPU;
         SetPlayerHandCardSprites();
         SetCPUHandCardSprites();
         SetLastPlayedCardSprite(__Deck.LastCardPlayed);
@@ -74,16 +77,17 @@ public class GamePlay : MonoBehaviour
             DealCardsOnGameStart();
         }
 
-        else
+        else if (__PlayCard.IsPlayerTurn)
         {
             ICard _DrawnCard = __Deck.DrawCard();
 
             GameObject _PlayerDrawnCard = Instantiate(__CardSprite, new Vector3(0, 0, 0), Quaternion.identity);
-            _PlayerDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = __RenderSprites.GetSprite(_DrawnCard);
+            _PlayerDrawnCard.GetComponent<Image>().sprite = __RenderSprites.GetSprite(_DrawnCard);
             _PlayerDrawnCard.transform.SetParent(__PlayerArea.transform, false);
             _PlayerDrawnCard.name = _DrawnCard.ToString();
 
             __Player.Cards.Add(_DrawnCard);
+            __PlayCard.IsPlayerTurn = false;
             SetPlayerHandCardSprites();
 
             //User has selected to pick up a card - CPU's turn
@@ -104,6 +108,7 @@ public class GamePlay : MonoBehaviour
         __CPU = new CPU();
         // Create a new instance of a Deck
         __Deck = new Deck();
+        __PlayCard = new PlayCard(__Deck, __CPU, __Player);
 
         // Create the deck of cards
         __Deck.CreateDeck();
@@ -124,7 +129,7 @@ public class GamePlay : MonoBehaviour
         foreach (ICard _Card in __CPU.Cards)
         {
             GameObject _CPUDrawnCard = Instantiate(__CardSprite, new Vector3(0, 0, 0), Quaternion.identity);
-            _CPUDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = __BackCardSprite;
+            _CPUDrawnCard.GetComponent<Image>().sprite = __BackCardSprite;
             _CPUDrawnCard.transform.SetParent(__OpponentArea.transform, false);
             _CPUDrawnCard.name = _Card.ToString();
         }
@@ -132,7 +137,7 @@ public class GamePlay : MonoBehaviour
 
     private void SetLastPlayedCardSprite(ICard card)
     {
-        __LastPlayedCard.GetComponent<NsUnityEngineUI.Image>().sprite = __RenderSprites.GetSprite(card);
+        __LastPlayedCard.GetComponent<Image>().sprite = __RenderSprites.GetSprite(card);
     }
 
     private void SetPlayerHandCardSprites()
@@ -142,7 +147,7 @@ public class GamePlay : MonoBehaviour
         foreach (ICard _Card in __Player.Cards)
         {
             GameObject _PlayerDrawnCard = Instantiate(__CardSprite, new Vector3(0, 0, 0), Quaternion.identity);
-            _PlayerDrawnCard.GetComponent<NsUnityEngineUI.Image>().sprite = __RenderSprites.GetSprite(_Card);
+            _PlayerDrawnCard.GetComponent<Image>().sprite = __RenderSprites.GetSprite(_Card);
             //Instead of calling the method directly use a co-routine otherwise the canvas only gets updated after the method is finished
             _PlayerDrawnCard.GetComponent<Button>().onClick.AddListener(() => CardClicked(_PlayerDrawnCard));
             _PlayerDrawnCard.transform.SetParent(__PlayerArea.transform, false);
@@ -152,28 +157,31 @@ public class GamePlay : MonoBehaviour
 
     public IEnumerator UserPlaysCard(GameObject currentCardClickedGO)
     {
-        yield return new WaitForSeconds(.01f);
-        ICard _PreviousLastPlayedCard = __Deck.LastCardPlayed;
-        ICard _CurrentCardClickedCard = __Player.Cards.FirstOrDefault(card => card.ToString() == currentCardClickedGO.name);
-        PlayCard _PlayCard = new PlayCard(__Deck, _CurrentCardClickedCard, __Player, __CPU);
-        __Deck = _PlayCard.PlayerPlaysCard();
-        __Player = _PlayCard.Player;
-        __CPU = _PlayCard.CPU;
-        SetPlayerHandCardSprites();
-        SetCPUHandCardSprites();
-        SetLastPlayedCardSprite(__Deck.LastCardPlayed);
-        if (__Player.Cards.Count == 0)
+
+        if (__PlayCard.IsPlayerTurn)
         {
-            print("Player wins!");
+            yield return new WaitForSeconds(.01f);
+            ICard _CurrentCardClickedCard = __Player.Cards.FirstOrDefault(card => card.ToString() == currentCardClickedGO.name);
+            __PlayCard.PlayedCard = _CurrentCardClickedCard;
+            __Deck = __PlayCard.PlayerPlaysCard();
+            __Player = __PlayCard.Player;
+            __CPU = __PlayCard.CPU;
+            SetPlayerHandCardSprites();
+            SetCPUHandCardSprites();
+            SetLastPlayedCardSprite(__Deck.LastCardPlayed);
+            if (__Player.Cards.Count == 0)
+            {
+                SceneManager.LoadScene(SceneNames.WINNER_SCREEN);
+            }
         }
-        if (_PreviousLastPlayedCard != __Deck.LastCardPlayed)
+        if (!__PlayCard.IsPlayerTurn)
         {
             //User has selected a valid card - CPU's turn
             yield return new WaitForSeconds(2f);
             CPUPlaysCard();
-            if (__Player.Cards.Count == 0)
+            if (__CPU.Cards.Count == 0)
             {
-                print("CPU wins!");
+                SceneManager.LoadScene(SceneNames.GAME_OVER);
             }
         }
         //User has selected an invalid card - User's turn
