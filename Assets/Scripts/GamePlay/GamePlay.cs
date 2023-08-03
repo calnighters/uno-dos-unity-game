@@ -105,7 +105,7 @@ public class GamePlay : MonoBehaviour
     public void Start()
     {
         __Player = new Player();
-        __CPU = new CPU();
+        __CPU = new CPU(__Player);
         // Create a new instance of a Deck
         __Deck = new Deck();
         __PlayCard = new PlayCard(__Deck, __CPU, __Player);
@@ -166,6 +166,7 @@ public class GamePlay : MonoBehaviour
             __Deck = __PlayCard.PlayerPlaysCard();
             __Player = __PlayCard.Player;
             __CPU = __PlayCard.CPU;
+            __CPU.Player = __Player;
             SetPlayerHandCardSprites();
             SetCPUHandCardSprites();
             SetLastPlayedCardSprite(__Deck.LastCardPlayed);

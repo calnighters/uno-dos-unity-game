@@ -1,6 +1,9 @@
+using Assets.Scripts.Players.Difficulty;
+using Assets.Scripts.Players.Difficulty.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnoDos.Cards.Entities;
 using UnoDos.Cards.Enums;
 using UnoDos.Cards.Interfaces;
 using UnoDos.Decks.Interfaces;
@@ -10,6 +13,33 @@ namespace UnoDos.Players.Entities
 {
     public class CPU : Player, ICPU
     {
+        private IPlayer __Player;
+
+        public CPU(IPlayer player)
+        {
+            __Player = player;
+        }
+
+        private ICard CalculateBestMove(List<ICard> playableCards, ICard lastCardPlayed, int bestCardToPlayIndex = 0)
+        {
+            bool _PlayCard = true;
+            List<ICard> _OrderedPlayableCard = playableCards.OrderByDescending(card => card.CardScore).ToList();
+            ICard _BestCardToPlay = _OrderedPlayableCard[bestCardToPlayIndex];
+            if (_BestCardToPlay.TypeOfCard == CardType.SwapDeck || _BestCardToPlay.TypeOfCard == CardType.SeeThrough)
+            {
+                _PlayCard = ShouldPlaySwapDeckOrSeeThroughCard(playableCards, _BestCardToPlay, lastCardPlayed);
+            }
+            if (_PlayCard)
+            {
+                return _BestCardToPlay;
+            }
+            else
+            {
+                return CalculateBestMove(playableCards, lastCardPlayed, bestCardToPlayIndex++);
+            }
+
+        }
+
         private IDeck LoseTwoCards(IDeck currentDeck)
         {
             if (Cards.Count < 2)
@@ -42,21 +72,35 @@ namespace UnoDos.Players.Entities
             if (PlayableCards.Count > 0)
             {
                 //Select a random playable card
-                Random _Random = new Random();
-                int SelectedRandomCardIndex = _Random.Next(PlayableCards.Count());
-                ICard _PlayedCard = PlayableCards[SelectedRandomCardIndex];
-                if (_PlayedCard.TypeOfCard == CardType.SeeThrough)
+                DifficultyRolls __Roll = new DifficultyRolls(CPUDifficulty);
+                bool _RollToNotDrawCard = __Roll.Roll();
+                if (!_RollToNotDrawCard)
                 {
-                    _PlayedCard.Colour = _ShownCard.Colour;
+                    DrawCard(currentDeck);
                 }
-                //Remove card from hand
-                Cards.Remove(_PlayedCard);
-                //Add card to played
-                currentDeck.PlayedCards.Add(_PlayedCard);
-                //Action of played card
-                if (_PlayedCard.TypeOfCard == CardType.LoseTwo)
+                else
                 {
-                    currentDeck = LoseTwoCards(currentDeck);
+                    bool _RollToPlayBestCard = __Roll.Roll();
+                    ICard _PlayedCard = CalculateBestMove(PlayableCards, currentDeck.LastCardPlayed);
+                    if (!_RollToPlayBestCard)
+                    {
+                        PlayableCards.Remove(_PlayedCard);
+                        Random _RandomCardToPlayGenerator = new Random();
+                        _PlayedCard = PlayableCards[_RandomCardToPlayGenerator.Next(PlayableCards.Count)];
+                    }
+                    if (_PlayedCard.TypeOfCard == CardType.SeeThrough)
+                    {
+                        _PlayedCard.Colour = _ShownCard.Colour;
+                    }
+                    //Remove card from hand
+                    Cards.Remove(_PlayedCard);
+                    //Add card to played
+                    currentDeck.PlayedCards.Add(_PlayedCard);
+                    //Action of played card
+                    if (_PlayedCard.TypeOfCard == CardType.LoseTwo)
+                    {
+                        currentDeck = LoseTwoCards(currentDeck);
+                    }
                 }
             }
             //Can't play - pick up
@@ -85,6 +129,26 @@ namespace UnoDos.Players.Entities
             return PlayableCards;
         }
 
+        private bool ShouldPlaySwapDeckOrSeeThroughCard(List<ICard> playableCards, ICard desiredCardToPlay, ICard lastShownCard)
+        {
+            bool _SameColourAsLastShown = playableCards.Any(card => card.Colour == lastShownCard.Colour);
+            if (desiredCardToPlay.TypeOfCard == CardType.SeeThrough)
+            {
+                return !_SameColourAsLastShown;
+            }
+            if (desiredCardToPlay.TypeOfCard == CardType.SwapDeck)
+            {
+                return !_SameColourAsLastShown || __Player.Cards.Count() < Cards.Count();
+            }
+            return false;
+        }
+
+        public DifficultyLevel CPUDifficulty { get; set; }
         public List<ICard> PlayableCards { get; private set; }
+        public IPlayer Player
+        {
+            get => __Player;
+            set => __Player = value;
+        }
     }
 }

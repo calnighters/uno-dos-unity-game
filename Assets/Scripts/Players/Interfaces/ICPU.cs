@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts.Players.Difficulty.Enums;
+using System.Collections.Generic;
 using UnoDos.Cards.Interfaces;
 using UnoDos.Decks.Interfaces;
 
@@ -10,6 +11,8 @@ namespace UnoDos.Players.Interfaces
 
         List<ICard> PossibleCards(ICard shownCard);
 
+        DifficultyLevel CPUDifficulty { get; set; }
         List<ICard> PlayableCards { get; }
+        IPlayer Player { get; set; }
     }
 }

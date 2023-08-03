@@ -11,8 +11,10 @@ namespace UnoDos.Decks.Entities
     public class Deck : IDeck
     {
         private const int DRAW_FACE_CARD_AMOUNT = 1;
-        private const int SPECIAL_CARD_VALUE = 20;
-        private const int WILDCARD_VALUE = 50;
+        private const int LOSE_TWO_CARD_VALUE = 50;
+        private const int RESET_CARD_VALUE = 40;
+        private const int SEE_THROUGH_CARD_VALUE = 30;
+        private const int SWAP_DECK_CARD_VALUE = 20;
 
         private ICard __CardCreator;
         private List<ICard> __DeckOfCards;
@@ -30,14 +32,14 @@ namespace UnoDos.Decks.Entities
             DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.Eight, Convert.ToInt32(CardType.Eight)));
             DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.Nine, Convert.ToInt32(CardType.Nine)));
 
-            DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.Reset, SPECIAL_CARD_VALUE));
-            DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.LoseTwo, SPECIAL_CARD_VALUE));
-            DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.SwapDeck, SPECIAL_CARD_VALUE));
+            DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.Reset, RESET_CARD_VALUE));
+            DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.LoseTwo, LOSE_TWO_CARD_VALUE));
+            DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.SwapDeck, SWAP_DECK_CARD_VALUE));
         }
 
         private void AddSeeThroughCard()
         {
-            DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, CardColour.SeeThrough, CardType.SeeThrough, WILDCARD_VALUE));
+            DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, CardColour.SeeThrough, CardType.SeeThrough, SEE_THROUGH_CARD_VALUE));
         }
 
         public void CreateDeck()
