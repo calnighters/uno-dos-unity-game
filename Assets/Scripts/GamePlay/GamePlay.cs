@@ -12,6 +12,7 @@ using UnityEngine.UI;
 using Assets.Scripts.Screen_Navigation.StaticClasses;
 using UnityEngine.SceneManagement;
 using UnoDos.Cards.Enums;
+using Assets.Scripts.Settings;
 
 public class GamePlay : MonoBehaviour
 {
@@ -105,7 +106,7 @@ public class GamePlay : MonoBehaviour
     public void Start()
     {
         __Player = new Player();
-        __CPU = new CPU(__Player);
+        __CPU = new CPU(__Player) { CPUDifficulty = GameSettings.SelectedDifficulty};
         // Create a new instance of a Deck
         __Deck = new Deck();
         __PlayCard = new PlayCard(__Deck, __CPU, __Player);
