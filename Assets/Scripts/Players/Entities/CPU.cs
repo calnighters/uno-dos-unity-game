@@ -15,12 +15,14 @@ namespace UnoDos.Players.Entities
     {
         private IPlayer __Player;
 
+
         public CPU(IPlayer player)
         {
             __Player = player;
+            HasCPUPlayedCard = false;
         }
 
-        private ICard CalculateBestMove(List<ICard> playableCards, ICard lastCardPlayed, int bestCardToPlayIndex = 0)
+        private ICard CalculateBestMove(List<ICard> playableCards, ICard lastCardPlayed, int bestCardToPlayIndex)
         {
             bool _PlayCard = true;
             List<ICard> _OrderedPlayableCard = playableCards.OrderByDescending(card => card.CardScore).ToList();
@@ -35,7 +37,13 @@ namespace UnoDos.Players.Entities
             }
             else
             {
-                return CalculateBestMove(playableCards, lastCardPlayed, bestCardToPlayIndex++);
+                bestCardToPlayIndex++;
+                if (bestCardToPlayIndex < playableCards.Count)
+                {
+                    return CalculateBestMove(playableCards, lastCardPlayed, bestCardToPlayIndex);
+                }
+                //If last card but not best to play - just play this one
+                return _BestCardToPlay;
             }
 
         }
@@ -64,7 +72,7 @@ namespace UnoDos.Players.Entities
         //Method for CPU to play a card after the list of playable cards has been generated
         public IDeck PlayCardCPU(IDeck currentDeck)
         {
-            ICard _ShownCard = currentDeck.LastCardPlayed;
+            ICard _ShownCard = currentDeck.getLastNonSTCard();
 
             //List of possible CPU cards
             PlayableCards = PossibleCards(_ShownCard);
@@ -77,12 +85,13 @@ namespace UnoDos.Players.Entities
                 if (!_RollToNotDrawCard)
                 {
                     DrawCard(currentDeck);
+                    HasCPUPlayedCard = false;
                 }
                 else
                 {
                     bool _RollToPlayBestCard = __Roll.Roll();
-                    ICard _PlayedCard = CalculateBestMove(PlayableCards, currentDeck.LastCardPlayed);
-                    if (!_RollToPlayBestCard)
+                    ICard _PlayedCard = CalculateBestMove(PlayableCards, currentDeck.LastCardPlayed, 0);
+                    if (!_RollToPlayBestCard && PlayableCards.Count > 1)
                     {
                         PlayableCards.Remove(_PlayedCard);
                         Random _RandomCardToPlayGenerator = new Random();
@@ -101,14 +110,16 @@ namespace UnoDos.Players.Entities
                     {
                         currentDeck = LoseTwoCards(currentDeck);
                     }
+                    HasCPUPlayedCard = true;
                 }
             }
             //Can't play - pick up
             else
             {
                 DrawCard(currentDeck);
+                //Set CPU played card to false
+                HasCPUPlayedCard = false;
             }
-
             return currentDeck;
         }
 
@@ -119,7 +130,7 @@ namespace UnoDos.Players.Entities
             //For each card the CPU has
             foreach (ICard _Card in Cards)
             {
-                //Calls the parent Player().CanPLayCard() method
+                //Calls the parent Player().CanPlayCard() method
                 if (CanPlayCard(_Card, shownCard))
                 {
                     //And adds card to list if playable
@@ -150,5 +161,6 @@ namespace UnoDos.Players.Entities
             get => __Player;
             set => __Player = value;
         }
+        public bool HasCPUPlayedCard { get; set; }
     }
 }

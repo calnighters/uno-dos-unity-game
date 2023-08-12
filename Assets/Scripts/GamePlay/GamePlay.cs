@@ -26,6 +26,7 @@ public class GamePlay : MonoBehaviour
     public GameObject __DeckButton;
     public Sprite[] __GreenCardSprites;
     public GameObject __LastPlayedCard;
+    public GameObject __LastNonSTCard;
     public Sprite[] __MinusTwoCardSprites;
     public GameObject __OpponentArea;
     public Sprite[] __OrangeCardSprites;
@@ -36,7 +37,7 @@ public class GamePlay : MonoBehaviour
     public Sprite[] __PurpleCardSprites;
     public RenderSprites __RenderSprites;
     public Sprite[] __ResetCardSprites;
-    public Sprite[] __SpecialCardSprites;
+    public Sprite[] __SeeThroughSprites;
     public Sprite[] __SwapDeckCardSprites;
 
     //Co-routine is used to update canvas mid method rather than waiting until end
@@ -45,14 +46,21 @@ public class GamePlay : MonoBehaviour
         StartCoroutine(UserPlaysCard(currentCardClicked));
     }
 
-    private void CPUPlaysCard()
+    private IEnumerator CPUPlaysCard()
     {
-        __Deck = __PlayCard.CPUPlaysCard();
-        __Player = __PlayCard.Player;
-        __CPU = __PlayCard.CPU;
-        SetPlayerHandCardSprites();
-        SetCPUHandCardSprites();
-        SetLastPlayedCardSprite(__Deck.LastCardPlayed);
+        __CPU.HasCPUPlayedCard = false;
+        //While loop in-case the CPU plays a reset - in this class so it is updated on canvas and there is a pause between next play
+        while (!__PlayCard.IsPlayerTurn)
+        {
+            //CPU Delay - to look like it is thinking
+            yield return new WaitForSeconds(2f);
+            __Deck = __PlayCard.CPUPlaysCard();
+            __Player = __PlayCard.Player;
+            __CPU = __PlayCard.CPU;
+            SetPlayerHandCardSprites();
+            SetCPUHandCardSprites();
+            SetLastPlayedCardSprite(__Deck.LastCardPlayed, __Deck.getLastNonSTCard());
+        }
     }
 
     public void DealCardsOnGameStart()
@@ -67,7 +75,8 @@ public class GamePlay : MonoBehaviour
 
         ICard _StartingCard = __Deck.DrawInitialCard();
         __LastPlayedCard.SetActive(true);
-        SetLastPlayedCardSprite(_StartingCard);
+        __LastNonSTCard.SetActive(true);
+        SetLastPlayedCardSprite(_StartingCard, _StartingCard);
     }
 
     public IEnumerator DealCards()
@@ -92,8 +101,9 @@ public class GamePlay : MonoBehaviour
             SetPlayerHandCardSprites();
 
             //User has selected to pick up a card - CPU's turn
-            yield return new WaitForSeconds(2f);
-            CPUPlaysCard();
+            yield return new WaitForSeconds(.01f);
+            __Player.HasPlayerPlayedCard = false;
+            StartCoroutine(CPUPlaysCard());
         }
     }
 
@@ -120,7 +130,7 @@ public class GamePlay : MonoBehaviour
         // Deal cards to the player
         //DealCards();
 
-        __RenderSprites = new RenderSprites(__GreenCardSprites, __OrangeCardSprites, __PinkCardSprites, __PurpleCardSprites, __SpecialCardSprites, __ResetCardSprites, __SwapDeckCardSprites, __MinusTwoCardSprites);
+        __RenderSprites = new RenderSprites(__GreenCardSprites, __OrangeCardSprites, __PinkCardSprites, __PurpleCardSprites, __SeeThroughSprites, __ResetCardSprites, __SwapDeckCardSprites, __MinusTwoCardSprites);
     }
 
     private void SetCPUHandCardSprites()
@@ -136,9 +146,10 @@ public class GamePlay : MonoBehaviour
         }
     }
 
-    private void SetLastPlayedCardSprite(ICard card)
+    private void SetLastPlayedCardSprite(ICard playedCard, ICard nonSTCard)
     {
-        __LastPlayedCard.GetComponent<Image>().sprite = __RenderSprites.GetSprite(card);
+        __LastPlayedCard.GetComponent<Image>().sprite = __RenderSprites.GetSprite(playedCard);
+        __LastNonSTCard.GetComponent<Image>().sprite = __RenderSprites.GetSprite(nonSTCard);
     }
 
     private void SetPlayerHandCardSprites()
@@ -170,7 +181,7 @@ public class GamePlay : MonoBehaviour
             __CPU.Player = __Player;
             SetPlayerHandCardSprites();
             SetCPUHandCardSprites();
-            SetLastPlayedCardSprite(__Deck.LastCardPlayed);
+            SetLastPlayedCardSprite(__Deck.LastCardPlayed, __Deck.getLastNonSTCard());
             if (__Player.Cards.Count == 0)
             {
                 SceneManager.LoadScene(SceneNames.WINNER_SCREEN);
@@ -179,8 +190,9 @@ public class GamePlay : MonoBehaviour
         if (!__PlayCard.IsPlayerTurn)
         {
             //User has selected a valid card - CPU's turn
-            yield return new WaitForSeconds(2f);
-            CPUPlaysCard();
+            yield return new WaitForSeconds(.01f);
+
+            StartCoroutine(CPUPlaysCard());
             if (__CPU.Cards.Count == 0)
             {
                 SceneManager.LoadScene(SceneNames.GAME_OVER);

@@ -11,8 +11,6 @@ namespace UnoDos.Cards.Enums
         [Description("Orange")]
         Orange,
         [Description("Purple")]
-        Purple,
-        [Description("See Through")]
-        SeeThrough
+        Purple
     }
 }

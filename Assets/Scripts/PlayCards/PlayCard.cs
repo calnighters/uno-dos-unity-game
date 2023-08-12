@@ -21,17 +21,17 @@ public class PlayCard : MonoBehaviour
 
     public IDeck CPUPlaysCard()
     {
-        if (!IsPlayerTurn)
-        {
+        //while (!IsPlayerTurn)
+        //{
             __Deck = __CPU.PlayCardCPU(__Deck);
-        }
-
-        //Functionality for swapping decks between player and CPU. Easier in this class than player / CPU classes
-        if (__Deck.LastCardPlayed.TypeOfCard == CardType.SwapDeck)
-        {
-            SwapDecks();
-        }
-        IsPlayerTurn = __Deck.LastCardPlayed.TypeOfCard == CardType.Reset ? false : true;
+            //Functionality for swapping decks between player and CPU. Easier in this class than player / CPU classes
+            if (__CPU.HasCPUPlayedCard && __Deck.LastCardPlayed.TypeOfCard == CardType.SwapDeck)
+            {
+                SwapDecks();
+            }
+            IsPlayerTurn = __Deck.LastCardPlayed.TypeOfCard == CardType.Reset && __CPU.HasCPUPlayedCard ? false : true;
+        //}
+        __Player.HasPlayerPlayedCard = false;
         return __Deck;
     }
 

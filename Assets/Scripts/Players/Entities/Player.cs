@@ -24,13 +24,19 @@ namespace UnoDos.Players.Entities
 
         public bool CanPlayCard(ICard playedCard, ICard shownCard)
         {
+            //bool _IsShownCardST = shownCard.TypeOfCard == CardType.SeeThrough
             bool _IsShownCardSpecial = Card.SpecialCards.Any(specialCard => specialCard == shownCard.TypeOfCard);
             bool _IsColourValid = playedCard.Colour == shownCard.Colour;
 
             //If see through
-            if (playedCard.Colour == CardColour.SeeThrough)
+            if (playedCard.TypeOfCard == CardType.SeeThrough)
             {
-                return true;
+                //If same colour
+                if (_IsColourValid)
+                {
+                    return true;
+                }
+                return false;
             }
 
             switch (playedCard.TypeOfCard)
@@ -113,7 +119,7 @@ namespace UnoDos.Players.Entities
 
         public IDeck PlayCard(ICard playedCard, IDeck currentDeck)
         {
-            ICard _ShownCard = currentDeck.LastCardPlayed;
+            ICard _ShownCard = currentDeck.getLastNonSTCard();
 
             if (CanPlayCard(playedCard, _ShownCard))
             {
@@ -131,6 +137,7 @@ namespace UnoDos.Players.Entities
             {
                 HasPlayerPlayedCard = false;
             }
+            
             return currentDeck;
         }
 

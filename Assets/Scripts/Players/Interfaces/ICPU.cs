@@ -14,5 +14,6 @@ namespace UnoDos.Players.Interfaces
         DifficultyLevel CPUDifficulty { get; set; }
         List<ICard> PlayableCards { get; }
         IPlayer Player { get; set; }
+        bool HasCPUPlayedCard { get; set; }
     }
 }

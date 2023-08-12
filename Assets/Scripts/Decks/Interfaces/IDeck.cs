@@ -14,5 +14,8 @@ namespace UnoDos.Decks.Interfaces
         List<ICard> DeckOfCards { get; }
         ICard LastCardPlayed { get; }
         List<ICard> PlayedCards { get; }
+        //ICard LastNonSTCard { get; set; }
+        void setLastNonSTCard();
+        ICard getLastNonSTCard();
     }
 }

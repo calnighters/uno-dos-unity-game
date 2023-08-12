@@ -19,9 +19,11 @@ namespace UnoDos.Decks.Entities
         private ICard __CardCreator;
         private List<ICard> __DeckOfCards;
         private List<ICard> __PlayedCards;
+        private ICard __LastNonSTCard;
 
         private void AddColourCards(CardColour colour)
         {
+            DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.Zero, Convert.ToInt32(CardType.Zero)));
             DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.One, Convert.ToInt32(CardType.One)));
             DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.Two, Convert.ToInt32(CardType.Two)));
             DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.Three, Convert.ToInt32(CardType.Three)));
@@ -35,36 +37,22 @@ namespace UnoDos.Decks.Entities
             DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.Reset, RESET_CARD_VALUE));
             DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.LoseTwo, LOSE_TWO_CARD_VALUE));
             DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.SwapDeck, SWAP_DECK_CARD_VALUE));
-        }
-
-        private void AddSeeThroughCard()
-        {
-            DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, CardColour.SeeThrough, CardType.SeeThrough, SEE_THROUGH_CARD_VALUE));
+            DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, colour, CardType.SeeThrough, SEE_THROUGH_CARD_VALUE));
         }
 
         public void CreateDeck()
         {
-
             foreach (CardColour _Colour in Enum.GetValues(typeof(CardColour)))
             {
                 switch (_Colour)
                 {
-                    case CardColour.Orange:
                     case CardColour.Pink:
                     case CardColour.Green:
+                    case CardColour.Orange:
                     case CardColour.Purple:
                         //Add 2 of each card
-                        DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, _Colour, CardType.Zero, Convert.ToInt32(CardType.Zero)));
-                        DeckOfCards.Add(CardCreator.CreateCard(DeckOfCards.Count + 1, _Colour, CardType.Zero, Convert.ToInt32(CardType.Zero)));
                         AddColourCards(_Colour);
                         AddColourCards(_Colour);
-                        break;
-                    case CardColour.SeeThrough:
-                        AddSeeThroughCard();
-                        AddSeeThroughCard();
-                        AddSeeThroughCard();
-                        AddSeeThroughCard();
-                        AddSeeThroughCard();
                         break;
                 }
             }
@@ -159,9 +147,37 @@ namespace UnoDos.Decks.Entities
             }
         }
 
+        public void setLastNonSTCard()
+        {
+            bool _CardSet = false;
+            foreach (ICard card in PlayedCards)
+            {
+                if (card.TypeOfCard != CardType.SeeThrough)
+                {
+                    __LastNonSTCard = card;
+                    _CardSet = true;
+                }
+            }
+            if (!_CardSet)
+            {
+                __LastNonSTCard = LastCardPlayed;
+            }
+        }
+
+        public ICard getLastNonSTCard()
+        {
+            setLastNonSTCard();
+            return __LastNonSTCard;
+        }
+
         private ICard CardCreator => __CardCreator = __CardCreator ?? new Card();
         public List<ICard> DeckOfCards => __DeckOfCards = __DeckOfCards ?? new();
         public ICard LastCardPlayed => PlayedCards.Last();
         public List<ICard> PlayedCards => __PlayedCards = __PlayedCards ?? new();
+        /*public ICard LastNonSTCard 
+        { 
+            get { return LastNonSTCard; }
+            set { setLastNonSTCard(); }
+        } */
     }
 }
