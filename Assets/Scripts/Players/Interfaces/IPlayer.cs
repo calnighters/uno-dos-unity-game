@@ -11,6 +11,7 @@ namespace UnoDos.Players.Interfaces
         IDeck LoseTwoCards(IDeck currentDeck, ICard playedCard);
         IDeck PlayCard(ICard playedCard, IDeck currentDeck);
         List<string> ViewCards();
+        int CalculateScore();
 
         List<ICard> Cards { get; set; }
         List<string> Errors { get; }

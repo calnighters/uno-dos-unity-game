@@ -13,11 +13,13 @@ namespace UnoDos.Players.Entities
         private const int DRAW_CARD_ONE = 1;
         private const string INVALID_COLOUR_ERROR = "Card colour {0} is an invalid card! Please play a card with this colour: {1}";
         private const string INVALID_NUMBER_ERROR = "Card number {0} is an invalid card! Please play a card with a value of +1 or -1 of the last card value, which is {1}!";
+        private int __PlayerScore;
 
         public Player()
         {
             LoseTwoCardCount = 0;
             HasPlayerPlayedCard = false;
+            __PlayerScore = 0;
         }
 
         private List<string> __Errors;
@@ -146,6 +148,15 @@ namespace UnoDos.Players.Entities
             List<string> _CardToString = new List<string>();
             Cards.ForEach(card => _CardToString.Add(card.ToString()));
             return _CardToString;
+        }
+
+        public int CalculateScore()
+        {
+            foreach (Card card in Cards)
+            {
+                __PlayerScore += card.CardScore;
+            }
+            return __PlayerScore;
         }
 
         public List<ICard> Cards { get; set; }

@@ -13,6 +13,9 @@ using Assets.Scripts.Screen_Navigation.StaticClasses;
 using UnityEngine.SceneManagement;
 using UnoDos.Cards.Enums;
 using Assets.Scripts.Settings;
+using System;
+using Assets.Scripts.Players.Difficulty.Enums;
+using Assets.Scripts.Players.GameModes.Enums;
 
 public class GamePlay : MonoBehaviour
 {
@@ -39,6 +42,7 @@ public class GamePlay : MonoBehaviour
     public Sprite[] __ResetCardSprites;
     public Sprite[] __SeeThroughSprites;
     public Sprite[] __SwapDeckCardSprites;
+//    private readonly GameMode __GameMode;
 
     //Co-routine is used to update canvas mid method rather than waiting until end
     public void CardClicked(GameObject currentCardClicked)
@@ -182,9 +186,10 @@ public class GamePlay : MonoBehaviour
             SetPlayerHandCardSprites();
             SetCPUHandCardSprites();
             SetLastPlayedCardSprite(__Deck.LastCardPlayed, __Deck.getLastNonSTCard());
+            Winner("Player");
             if (__Player.Cards.Count == 0)
             {
-                SceneManager.LoadScene(SceneNames.WINNER_SCREEN);
+                Winner("Player");
             }
         }
         if (!__PlayCard.IsPlayerTurn)
@@ -195,9 +200,33 @@ public class GamePlay : MonoBehaviour
             StartCoroutine(CPUPlaysCard());
             if (__CPU.Cards.Count == 0)
             {
-                SceneManager.LoadScene(SceneNames.GAME_OVER);
+                Winner("CPU");
             }
         }
         //User has selected an invalid card - User's turn
+    }
+
+    private void Winner(string winner)
+    {
+        GameMode _GameMode = GameSettings.SelectedMode;
+        if(_GameMode == GameMode.SingleRound)
+        {
+            if (winner == "Player")
+            {
+                SceneManager.LoadScene(SceneNames.WINNER_SCREEN);
+            }
+            else
+            {
+                SceneManager.LoadScene(SceneNames.GAME_OVER);
+            }
+        }
+        if(_GameMode == GameMode.MultipleRounds)
+        {
+            int _currentPlayerScore = PlayerPrefs.GetInt("PlayerScore");
+            PlayerPrefs.SetInt("PlayerScore", _currentPlayerScore + __Player.CalculateScore());
+            int _currentCPUScore = PlayerPrefs.GetInt("CPUScore");
+            PlayerPrefs.SetInt("CPUScore", _currentCPUScore + __CPU.CalculateScore());
+            SceneManager.LoadScene(SceneNames.ROUND_SCORE);
+        }
     }
 }
