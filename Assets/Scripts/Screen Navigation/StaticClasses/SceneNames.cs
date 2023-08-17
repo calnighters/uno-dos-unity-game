@@ -8,5 +8,6 @@
         public readonly static string MAIN_MENU = "MainMenu";
         public readonly static string SELECT_DIFFICULTY = "SelectDifficulty";
         public readonly static string WINNER_SCREEN = "WinnerScreen";
+        public readonly static string GAMEMODE_SCREEN = "SelectMode";
     }
 }

@@ -11,7 +11,7 @@ public class MainMenu : MonoBehaviour
 
     public void PlayGame()
     {
-        SceneManager.LoadScene(SceneNames.SELECT_DIFFICULTY);
+        SceneManager.LoadScene(SceneNames.GAMEMODE_SCREEN);
     }
 
     public void QuitGame()

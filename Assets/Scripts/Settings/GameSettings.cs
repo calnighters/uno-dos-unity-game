@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Players.Difficulty.Enums;
+using Assets.Scripts.Players.GameModes.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace Assets.Scripts.Settings
     public static class GameSettings
     {
         public static DifficultyLevel SelectedDifficulty;
+        public static GameMode SelectedMode;
     }
 }
