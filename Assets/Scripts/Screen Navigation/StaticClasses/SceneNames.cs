@@ -10,5 +10,6 @@
         public readonly static string WINNER_SCREEN = "WinnerScreen";
         public readonly static string GAMEMODE_SCREEN = "SelectMode";
         public readonly static string ROUND_SCORE = "RoundScore";
+        public readonly static string DRAW_SCREEN = "DrawScreen";
     }
 }

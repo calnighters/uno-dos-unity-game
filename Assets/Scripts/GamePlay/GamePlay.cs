@@ -42,7 +42,6 @@ public class GamePlay : MonoBehaviour
     public Sprite[] __ResetCardSprites;
     public Sprite[] __SeeThroughSprites;
     public Sprite[] __SwapDeckCardSprites;
-//    private readonly GameMode __GameMode;
 
     //Co-routine is used to update canvas mid method rather than waiting until end
     public void CardClicked(GameObject currentCardClicked)
@@ -186,6 +185,7 @@ public class GamePlay : MonoBehaviour
             SetPlayerHandCardSprites();
             SetCPUHandCardSprites();
             SetLastPlayedCardSprite(__Deck.LastCardPlayed, __Deck.getLastNonSTCard());
+            //Used for testing - comment out
             Winner("Player");
             if (__Player.Cards.Count == 0)
             {
@@ -213,19 +213,21 @@ public class GamePlay : MonoBehaviour
         {
             if (winner == "Player")
             {
+                GameSettings.Winner = WinnerObject.Player;
                 SceneManager.LoadScene(SceneNames.WINNER_SCREEN);
             }
             else
             {
+                GameSettings.Winner = WinnerObject.CPU;
                 SceneManager.LoadScene(SceneNames.GAME_OVER);
             }
         }
         if(_GameMode == GameMode.MultipleRounds)
         {
-            int _currentPlayerScore = PlayerPrefs.GetInt("PlayerScore");
-            PlayerPrefs.SetInt("PlayerScore", _currentPlayerScore + __Player.CalculateScore());
-            int _currentCPUScore = PlayerPrefs.GetInt("CPUScore");
-            PlayerPrefs.SetInt("CPUScore", _currentCPUScore + __CPU.CalculateScore());
+            int _currentPlayerScore = GameSettings.PlayerScore;
+            GameSettings.PlayerScore = _currentPlayerScore + __Player.CalculateScore();
+            int _currentCPUScore = GameSettings.CPUScore;
+            GameSettings.CPUScore = _currentCPUScore + __CPU.CalculateScore();
             SceneManager.LoadScene(SceneNames.ROUND_SCORE);
         }
     }

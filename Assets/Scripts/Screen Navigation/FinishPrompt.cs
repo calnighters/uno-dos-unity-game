@@ -1,4 +1,5 @@
 using Assets.Scripts.Screen_Navigation.StaticClasses;
+using Assets.Scripts.Settings;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,11 +12,29 @@ public class FinishPrompt : MonoBehaviour
         __FinishPromptUI.SetActive(false);
     }
 
-    public void GoToMainMenu()
+    public void FinishGame()
     {
-        PlayerPrefs.SetInt("PlayerScore", 0);
-        PlayerPrefs.SetInt("CPUScore", 0);
-        SceneManager.LoadScene(SceneNames.MAIN_MENU);
+        if (GameSettings.PlayerScore < GameSettings.CPUScore)
+        {
+            GameSettings.Winner = WinnerObject.Player;
+            GameSettings.PlayerScore = 0;
+            GameSettings.CPUScore = 0;
+            SceneManager.LoadScene(SceneNames.WINNER_SCREEN);
+        }
+        else if (GameSettings.PlayerScore == GameSettings.CPUScore)
+        {
+            GameSettings.Winner = WinnerObject.Draw;
+            GameSettings.PlayerScore = 0;
+            GameSettings.CPUScore = 0;
+            SceneManager.LoadScene(SceneNames.DRAW_SCREEN);
+        }
+        else
+        {
+            GameSettings.Winner = WinnerObject.CPU;
+            GameSettings.PlayerScore = 0;
+            GameSettings.CPUScore = 0;
+            SceneManager.LoadScene(SceneNames.GAME_OVER);
+        }
     }
 
     public void OpenHomeOption()

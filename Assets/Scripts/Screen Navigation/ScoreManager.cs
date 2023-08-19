@@ -19,9 +19,9 @@ namespace Assets.Scripts.Screen_Navigation
         // Start is called before the first frame update
         void Start()
         {
-            __PlayerScore = PlayerPrefs.GetInt("PlayerScore");
+            __PlayerScore = GameSettings.PlayerScore;
             __PlayerScoreText.text = "Player Score: " + __PlayerScore.ToString();
-            __CPUScore = PlayerPrefs.GetInt("CPUScore");
+            __CPUScore = GameSettings.CPUScore;
             __CPUScoreText.text = "CPU Score: " + __CPUScore.ToString();
         }
 

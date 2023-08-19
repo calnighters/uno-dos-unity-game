@@ -12,5 +12,8 @@ namespace Assets.Scripts.Settings
     {
         public static DifficultyLevel SelectedDifficulty;
         public static GameMode SelectedMode;
+        public static WinnerObject Winner;
+        public static int PlayerScore;
+        public static int CPUScore;
     }
 }
