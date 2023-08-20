@@ -186,7 +186,7 @@ public class GamePlay : MonoBehaviour
             SetCPUHandCardSprites();
             SetLastPlayedCardSprite(__Deck.LastCardPlayed, __Deck.getLastNonSTCard());
             //Used for testing - comment out
-            Winner("Player");
+            //Winner("Player");
             if (__Player.Cards.Count == 0)
             {
                 Winner("Player");
