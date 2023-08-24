@@ -237,8 +237,10 @@ public class GamePlay : MonoBehaviour
                 GameObject _CPUDrawnCard = Instantiate(__CardSprite, new Vector3(0, 0, 0), Quaternion.identity);
                 _CPUDrawnCard.GetComponent<Image>().sprite = __BackCardSprite;
                 _CPUDrawnCard.GetComponent<Image>().rectTransform.sizeDelta = new Vector2(169.15f, 225.45f);
-                _CurrentOpponentArea.GetComponent<HorizontalLayoutGroup>().spacing = (_CurrentOpponentArea.GetComponent<RectTransform>().rect.width - (__CPUPlayers[i].Cards.Count * _CPUDrawnCard.GetComponent<RectTransform>().rect.width)) / (__CPUPlayers[i].Cards.Count - 1);
-
+                if (__CPUPlayers[i].Cards.Count > 1)
+                {
+                    _CurrentOpponentArea.GetComponent<HorizontalLayoutGroup>().spacing = (_CurrentOpponentArea.GetComponent<RectTransform>().rect.width - (__CPUPlayers[i].Cards.Count * _CPUDrawnCard.GetComponent<RectTransform>().rect.width)) / (__CPUPlayers[i].Cards.Count - 1);
+                }
                 _CPUDrawnCard.transform.SetParent(_CurrentOpponentArea.transform, false);
                 _CPUDrawnCard.name = _Card.ToString();
             }
@@ -262,7 +264,10 @@ public class GamePlay : MonoBehaviour
             _PlayerDrawnCard.GetComponent<Image>().rectTransform.sizeDelta = new Vector2(169.15f, 225.45f);
             //Instead of calling the method directly use a co-routine otherwise the canvas only gets updated after the method is finished
             _PlayerDrawnCard.GetComponent<Button>().onClick.AddListener(() => CardClicked(_PlayerDrawnCard));
-            __PlayerArea.GetComponent<HorizontalLayoutGroup>().spacing = (__PlayerArea.GetComponent<RectTransform>().rect.width - (__Player.Cards.Count * _PlayerDrawnCard.GetComponent<RectTransform>().rect.width)) / (__Player.Cards.Count - 1);
+            if (__Player.Cards.Count > 1)
+            {
+                __PlayerArea.GetComponent<HorizontalLayoutGroup>().spacing = (__PlayerArea.GetComponent<RectTransform>().rect.width - (__Player.Cards.Count * _PlayerDrawnCard.GetComponent<RectTransform>().rect.width)) / (__Player.Cards.Count - 1);
+            }
             _PlayerDrawnCard.transform.SetParent(__PlayerArea.transform, false);
             _PlayerDrawnCard.name = _Card.ToString();
         }
@@ -296,6 +301,7 @@ public class GamePlay : MonoBehaviour
             StartCoroutine(CPUPlaysCard());
         }
         //User has selected an invalid card - User's turn
+        
     }
 
     private void Winner(string winner)
