@@ -13,13 +13,12 @@ namespace UnoDos.Players.Entities
         private const int DRAW_CARD_ONE = 1;
         private const string INVALID_COLOUR_ERROR = "Card colour {0} is an invalid card! Please play a card with this colour: {1}";
         private const string INVALID_NUMBER_ERROR = "Card number {0} is an invalid card! Please play a card with a value of +1 or -1 of the last card value, which is {1}!";
-        private int __PlayerScore;
+        private const int OUT_OF_HP_PENALTY = 150;
 
         public Player()
         {
             LoseTwoCardCount = 0;
             HasPlayerPlayedCard = false;
-            __PlayerScore = 0;
         }
 
         private List<string> __Errors;
@@ -107,6 +106,10 @@ namespace UnoDos.Players.Entities
         public IDeck DrawCard(IDeck currentDeck)
         {
             Cards.Add(currentDeck.DrawCards(DRAW_CARD_ONE).SingleOrDefault());
+            if(IsHPMode)
+            {
+                RemainingHP -= 1;
+            }
             return currentDeck;
         }
 
@@ -154,15 +157,22 @@ namespace UnoDos.Players.Entities
         {
             foreach (Card card in Cards)
             {
-                __PlayerScore += card.CardScore;
+                PlayerScore += card.CardScore;
             }
-            return __PlayerScore;
+            if(RemainingHP <= 0)
+            {
+                PlayerScore += OUT_OF_HP_PENALTY;
+            }
+            return PlayerScore;
         }
 
         public List<ICard> Cards { get; set; }
         public List<string> Errors => __Errors = __Errors ?? new List<string>();
         public bool HasPlayerPlayedCard { get; set; }
+        public bool IsHPMode { get; set; }
         public int LoseTwoCardCount { get; set; }
         public string PlayerName { get; set; }
+        public int PlayerScore { get; set; }
+        public int RemainingHP { get; set; }
     }
 }

@@ -155,6 +155,7 @@ namespace UnoDos.Players.Entities
         }
 
         public DifficultyLevel CPUDifficulty { get; set; }
+        public int CPUPlayerNumber { get; set; } 
         public List<ICard> PlayableCards { get; private set; }
         public IPlayer Player
         {

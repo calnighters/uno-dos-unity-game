@@ -7,7 +7,6 @@ using UnoDos.Players.Interfaces;
 
 public class PlayCard : MonoBehaviour
 {
-    private ICPU __CPU;
     private IDeck __Deck;
     private IPlayer __Player;
 
@@ -15,22 +14,19 @@ public class PlayCard : MonoBehaviour
     {
         __Deck = deck;
         __Player = player;
-        __CPU = cpu;
+        CPU = cpu;
         IsPlayerTurn = true;
     }
 
     public IDeck CPUPlaysCard()
     {
-        //while (!IsPlayerTurn)
-        //{
-            __Deck = __CPU.PlayCardCPU(__Deck);
-            //Functionality for swapping decks between player and CPU. Easier in this class than player / CPU classes
-            if (__CPU.HasCPUPlayedCard && __Deck.LastCardPlayed.TypeOfCard == CardType.SwapDeck)
-            {
-                SwapDecks();
-            }
-            IsPlayerTurn = __Deck.LastCardPlayed.TypeOfCard == CardType.Reset && __CPU.HasCPUPlayedCard ? false : true;
-        //}
+        __Deck = CPU.PlayCardCPU(__Deck);
+        //Functionality for swapping decks between player and CPU. Easier in this class than player / CPU classes
+        if (CPU.HasCPUPlayedCard && __Deck.LastCardPlayed.TypeOfCard == CardType.SwapDeck)
+        {
+            SwapDecks();
+        }
+        IsPlayerTurn = __Deck.LastCardPlayed.TypeOfCard == CardType.Reset && CPU.HasCPUPlayedCard ? false : true;
         __Player.HasPlayerPlayedCard = false;
         return __Deck;
     }
@@ -40,7 +36,7 @@ public class PlayCard : MonoBehaviour
         if (IsPlayerTurn)
         {
 
-            if(__Deck.LastCardPlayed.TypeOfCard == CardType.LoseTwo && __Player.HasPlayerPlayedCard)
+            if (__Deck.LastCardPlayed.TypeOfCard == CardType.LoseTwo && __Player.HasPlayerPlayedCard)
             {
                 PlayerPlaysLoseTwo();
             }
@@ -66,7 +62,7 @@ public class PlayCard : MonoBehaviour
     {
         __Deck = __Player.LoseTwoCards(__Deck, PlayedCard);
         IsPlayerTurn = true;
-        if(__Player.LoseTwoCardCount == 2)
+        if (__Player.LoseTwoCardCount == 2)
         {
             __Player.LoseTwoCardCount = 0;
             IsPlayerTurn = false;
@@ -76,11 +72,11 @@ public class PlayCard : MonoBehaviour
     private void SwapDecks()
     {
         List<ICard> _TemporaryPlayerCards = __Player.Cards;
-        __Player.Cards = __CPU.Cards;
-        __CPU.Cards = _TemporaryPlayerCards;
+        __Player.Cards = CPU.Cards;
+        CPU.Cards = _TemporaryPlayerCards;
     }
 
-    public ICPU CPU => __CPU;
+    public ICPU CPU { get; set; }
     public bool IsPlayerTurn { get; set; }
     public IPlayer Player => __Player;
 

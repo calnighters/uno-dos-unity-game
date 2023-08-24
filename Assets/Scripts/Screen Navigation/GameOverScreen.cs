@@ -1,18 +1,27 @@
 using Assets.Scripts.Players.Difficulty.Enums;
 using Assets.Scripts.Screen_Navigation.StaticClasses;
 using Assets.Scripts.Settings;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class GameOverScreen : MonoBehaviour
 {
-    public GameObject __IncreaseDifficultyUI;
+    public TMP_Text __CPUWinnerText;
     public GameObject __DecreaseDifficultyUI;
+    private GameSettings __GameSettings;
+    public GameObject __IncreaseDifficultyUI;
+
+    public void Awake()
+    {
+        __GameSettings = SaveGameSettings.LoadSettings() ?? new GameSettings();
+        __CPUWinnerText.text += __GameSettings.CPUWinnerText;
+    }
 
     public void PlayAgain()
     {
-        if (GameSettings.Winner == WinnerObject.Player)
+        if (__GameSettings.Winner == WinnerObject.Player)
         {
-            if (GameSettings.SelectedDifficulty != DifficultyLevel.Insane)
+            if (__GameSettings.SelectedDifficulty != DifficultyLevel.Insane)
             {
                 __IncreaseDifficultyUI.SetActive(true);
             }
@@ -23,7 +32,7 @@ public class GameOverScreen : MonoBehaviour
         }
         else
         {
-            if (GameSettings.SelectedDifficulty != DifficultyLevel.Easy)
+            if (__GameSettings.SelectedDifficulty != DifficultyLevel.Easy)
             {
                 __DecreaseDifficultyUI.SetActive(true);
             }
@@ -32,47 +41,51 @@ public class GameOverScreen : MonoBehaviour
                 SameDifficulty();
             }
         }
+        SaveGameSettings.SaveSettings(__GameSettings);
     }
 
     public void IncreaseDifficulty()
     {
-        if (GameSettings.SelectedDifficulty == DifficultyLevel.Easy)
+        if (__GameSettings.SelectedDifficulty == DifficultyLevel.Easy)
         {
-            GameSettings.SelectedDifficulty = DifficultyLevel.Normal;
+            __GameSettings.SelectedDifficulty = DifficultyLevel.Normal;
         }
-        else if (GameSettings.SelectedDifficulty == DifficultyLevel.Normal)
+        else if (__GameSettings.SelectedDifficulty == DifficultyLevel.Normal)
         {
-            GameSettings.SelectedDifficulty = DifficultyLevel.Hard;
+            __GameSettings.SelectedDifficulty = DifficultyLevel.Hard;
         }
-        else if (GameSettings.SelectedDifficulty == DifficultyLevel.Hard)
+        else if (__GameSettings.SelectedDifficulty == DifficultyLevel.Hard)
         {
-            GameSettings.SelectedDifficulty = DifficultyLevel.Insane;
+            __GameSettings.SelectedDifficulty = DifficultyLevel.Insane;
         }
-        GameSettings.Winner = WinnerObject.NA;
+        __GameSettings.Winner = WinnerObject.NA;
         SceneManager.LoadScene(SceneNames.GAME_SCREEN);
+        SaveGameSettings.SaveSettings(__GameSettings);
     }
 
     public void DecreaseDifficulty()
     {
-        if (GameSettings.SelectedDifficulty == DifficultyLevel.Insane)
+        if (__GameSettings.SelectedDifficulty == DifficultyLevel.Insane)
         {
-            GameSettings.SelectedDifficulty = DifficultyLevel.Hard;
+            __GameSettings.SelectedDifficulty = DifficultyLevel.Hard;
         }
-        else if (GameSettings.SelectedDifficulty == DifficultyLevel.Hard)
+        else if (__GameSettings.SelectedDifficulty == DifficultyLevel.Hard)
         {
-            GameSettings.SelectedDifficulty = DifficultyLevel.Normal;
+            __GameSettings.SelectedDifficulty = DifficultyLevel.Normal;
         }
-        else if (GameSettings.SelectedDifficulty == DifficultyLevel.Normal)
+        else if (__GameSettings.SelectedDifficulty == DifficultyLevel.Normal)
         {
-            GameSettings.SelectedDifficulty = DifficultyLevel.Easy;
+            __GameSettings.SelectedDifficulty = DifficultyLevel.Easy;
         }
-        GameSettings.Winner = WinnerObject.NA;
+        __GameSettings.Winner = WinnerObject.NA;
         SceneManager.LoadScene(SceneNames.GAME_SCREEN);
+        SaveGameSettings.SaveSettings(__GameSettings);
     }
     public void SameDifficulty()
     {
-        GameSettings.Winner = WinnerObject.NA;
+        __GameSettings.Winner = WinnerObject.NA;
         SceneManager.LoadScene(SceneNames.GAME_SCREEN);
+        SaveGameSettings.SaveSettings(__GameSettings);
     }
     public void QuitToMainMenu()
     {

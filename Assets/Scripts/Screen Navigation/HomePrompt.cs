@@ -5,11 +5,13 @@ using UnityEngine.SceneManagement;
 public class HomePrompt : MonoBehaviour
 {
     // Start is called before the first frame update
+    public GameObject __GameCanvas;
     public GameObject __HomePromptUI;
 
     public void ContinueGame()
     {
         __HomePromptUI.SetActive(false);
+        __GameCanvas.SetActive(true);
     }
 
     public void GoToMainMenu()
@@ -20,5 +22,6 @@ public class HomePrompt : MonoBehaviour
     public void OpenHomeOption()
     {
         __HomePromptUI.SetActive(true);
+        __GameCanvas.SetActive(false);
     }
 }

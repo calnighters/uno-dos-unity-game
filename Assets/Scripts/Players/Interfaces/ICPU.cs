@@ -11,6 +11,7 @@ namespace UnoDos.Players.Interfaces
 
         List<ICard> PossibleCards(ICard shownCard);
 
+        int CPUPlayerNumber { get; set; }
         DifficultyLevel CPUDifficulty { get; set; }
         List<ICard> PlayableCards { get; }
         IPlayer Player { get; set; }

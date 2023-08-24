@@ -16,7 +16,10 @@ namespace UnoDos.Players.Interfaces
         List<ICard> Cards { get; set; }
         List<string> Errors { get; }
         bool HasPlayerPlayedCard { get; set; }
+        bool IsHPMode { get; set; }
         int LoseTwoCardCount { get; set; }
         string PlayerName { get; set; }
+        int PlayerScore { get; set; }
+        int RemainingHP { get; set; }
     }
 }
