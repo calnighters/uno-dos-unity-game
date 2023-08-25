@@ -312,6 +312,7 @@ public class GamePlay : MonoBehaviour
             if (winner == "Player")
             {
                 __GameSettings.Winner = WinnerObject.Player;
+                SaveGameSettings.SaveSettings(__GameSettings);
                 SceneManager.LoadScene(SceneNames.WINNER_SCREEN);
             }
             else
