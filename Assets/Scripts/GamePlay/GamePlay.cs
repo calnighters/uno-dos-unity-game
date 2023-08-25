@@ -21,7 +21,7 @@ public class GamePlay : MonoBehaviour
     private const string CPU_PLAYER_TURN = "CPU Player {0} Turn";
     private const string CPU_OUT_OF_HP = "CPU Player {0} Has ran out of HP!";
     private const int NO_OF_CARDS_TO_DEAL = 10;
-    private const int NO_OF_LIVES = 3;
+    private const int NO_OF_LIVES = 4;
     private const string PLAYER_TURN = "Player Turn";
 
     // Start is called before the first frame update
